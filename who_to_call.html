@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="//use.typekit.net/tzg3lni.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="p5/p5.js"></script>
+  <style>
+    html, body{
+      margin: 0;
+      padding: 0;
+      background: white;
+    }
+  </style>
+</head>
+<script type="text/javascript">
+
+
+var wtcList = [];
+var contacts = [];
+var list1 = [];
+var list2 = [];
+var titleFont;
+var listFont;
+
+var margin;
+var titleBreak;
+var bottomYmargin;
+var leftXmargin;
+var rightXmargin;
+var rowHeight;
+var columnWidth;
+var LeftListX1;
+var LeftListX2;
+var RightListX1;
+var RightListX2;
+
+
+function preload() {
+  wtcList = loadStrings('methane_outlier_WhomToCall.txt');
+  titleFont = loadFont ('Univers-Bold.otf');
+  listFont = loadFont ('Univers.otf');
+}
+
+
+function setup() {
+  createCanvas(990, 550);
+  // var x = (windowWidth - width) / 2;
+  // var y = (windowHeight - height) / 2;
+  // canvas.position(x, y);
+
+  margin = width/30;
+  bottomYmargin = height - 2 * margin;
+  topYmargin = 3.5 * margin;
+  leftXmargin = 0.5 * margin;
+  rightXmargin = width - 0.5 * margin;
+  rowHeight = (bottomYmargin - topYmargin) / 10;
+  columnWidth = width/2 - 0.3 * margin - leftXmargin;
+  LeftListX1 = margin;
+  LeftListX2 = width/2 - margin;
+  RightListX1 = width/2 + margin;
+  RightListX2 = width - margin;
+
+  println (margin);
+  readData();
+  list1 = contacts.slice();
+  list2 = contacts.slice();
+  list1.sort(sortBySimilarity);
+  list2.sort(sortByAuthority);
+
+  //removeCitedAuthors(contacts);
+  println(list1);
+  println(list2);
+}
+
+
+function draw() {
+  background(250);
+
+
+  for (var y = topYmargin; y <= bottomYmargin + 1; y += rowHeight) {
+    dottedLine(leftXmargin, width/2 - 0.3 * margin, y);
+    dottedLine(width/2 + 0.3 * margin, rightXmargin, y);
+  }
+
+
+  // Title
+  fill(0);
+  noStroke();
+  textAlign(CENTER, CENTER);
+  textFont(titleFont);
+  textSize(21);
+  text("Who to Call?", width / 2, margin);
+
+  // List Titles
+  //textFont(listFont);
+  textSize(14);
+  text("Authors doing similar work, not cited by this paper:", leftXmargin + columnWidth/2, 2.7 * margin);
+  text("Most cited authors doing similar work:", rightXmargin - columnWidth/2, 2.7 * margin);
+
+  // List 1
+  textFont(listFont);
+  textSize (14);
+  for (var i = 0; i < 10; i++) {
+    list1[i].display(LeftListX1, LeftListX2, i+1);
+    list2[i].display(RightListX1, RightListX2, i+1);
+  }
+
+  textAlign(LEFT, CENTER);
+  fill(255, 35, 35);
+  text("Authors cited by this study are in red", RightListX1, bottomYmargin + margin);
+}
+
+function dottedLine(x1, x2, y) {
+  for (var i = 0; i <= 90; i++) {
+    var x = lerp(x1, x2, i / 90);
+    stroke(0, 200);
+    noFill();
+    strokeWeight(3);
+    strokeCap(ROUND);
+    strokeWeight(2);
+    strokeCap(ROUND);
+    point(x, y);
+  }
+}
+
+function readData () {
+  for (var i = 1; i < wtcList.length; i++) {
+    contacts[i] = new Contact (wtcList[i]);
+  }
+}
+
+
+// This doesnt work!!!!
+function removeCitedAuthors(arrObj) {
+  for (var i = arrObj.length - 1; i >= 0; i--) {
+    if (arrObj[i].isCited) {
+      arrObj.splice(i, 1);
+    }
+  }
+}
+
+
+function Contact (line) {
+  this.pieces = split (line, '\t');
+  this.name   = this.pieces[0];
+  this.email  = this.pieces[1];
+  this.nCitations = this.pieces[2];
+  this.avgSimilarity = this.pieces[3];
+  this.numCitedByTarget = this.pieces[4];
+
+  if (this.numCitedByTarget == 0) {
+    this.isCited = false;
+  } else {
+    this.isCited = true;
+  }
+
+  this.display = function (x1, x2, y) {
+    if (this.isCited) {
+      fill(255, 35, 35);
+    } else {
+      fill(0);
+    }
+    textAlign (LEFT, CENTER);
+    text (this.name, x1, (topYmargin + y * rowHeight) - rowHeight / 2);
+    textAlign (RIGHT, CENTER);
+    text (this.email, x2, (topYmargin + y * rowHeight) - rowHeight / 2);
+  }
+}
+
+
+function sortBySimilarity(a,b) {
+  if (a.avgSimilarity > b.avgSimilarity) {
+    return -1;
+  }
+  if (a.avgSimilarity < b.avgSimilarity) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function sortByAuthority(a,b) {
+  if (a.nCitations > b.nCitations) {
+    return -1;
+  }
+  if (a.nCitations < b.nCitations) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+</script>
