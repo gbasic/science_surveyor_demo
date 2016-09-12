@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="//use.typekit.net/tzg3lni.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="p5/p5.js"></script>
+  <style>
+    html, body{
+      margin: 0;
+      padding: 0;
+      background: white;
+    }
+  </style>
+</head>
+<script type="text/javascript">
+
+function preload() {
+  titleFont = loadFont ('Univers-Bold.otf');
+  listFont = loadFont ('Univers.otf');
+}
+
+function setup() {
+  createCanvas(990, 550);
+
+  margin = width/30;
+}
+
+function draw() {
+  background(250);
+
+  fill(0);
+  noStroke();
+  textAlign(CENTER, CENTER);
+  textFont(titleFont);
+  textSize(21);
+  text("Mainstream or Outlier?", width / 2, margin);
+
+}
+
+
+</script>

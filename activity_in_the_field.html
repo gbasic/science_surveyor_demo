@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="//use.typekit.net/tzg3lni.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="p5/p5.js"></script>
+  <style>
+    html, body{
+      margin: 0;
+      padding: 0;
+      background: white;
+    }
+  </style>
+</head>
+<script type="text/javascript">
+
+var activityTable;
+var activeYears = []
+var years = [];
+var timeSpan;
+var numOfArticles = [];
+var activity = [];
+var yearIndegree = [];
+var influence = [];
+var citedByTarget = [];
+var citedByTarget_ = [];
+var maxArticles;
+var maxIndegree;
+var maxCited;
+var firstYear;
+var lastYear;
+var rowCount;
+
+
+// Margins
+var margin;
+var yearWidth;
+var bottomBarsMargin;
+var bottomButtonsMargin1;
+var bottomButtonsMargin2;
+var topBarsMargin;
+var barsHeight;
+var topTextMargin;
+
+// Y-Axis
+var n;
+var spacing;
+var yReach;
+
+var titleFont;
+var listFont;
+var txtHeight;
+
+var colorizeByInfluence = true;
+var c1;
+var c2;
+var r1;
+var r2;
+var c;
+
+
+// Bars
+var yearBars = [];
+var closestDist;
+var closest;
+
+var damping = 0.3;
+var arrangeBy = 1;
+
+function preload () {
+  //activityTable = loadTable ("Methane_Outlier_Timeline.txt", "tsv", "header");
+  activityTable = loadTable ("methane_outlier_year_stats.txt", "tsv", "header");
+  titleFont = loadFont ('Univers-Bold.otf');
+  listFont = loadFont ('Univers.otf');
+}
+
+function setup() {
+  createCanvas(990, 580);
+
+  txtHeight = (textAscent(listFont) + textDescent(listFont));
+  println ("text height " + txtHeight);
+
+  c1 = color(195, 222, 232);
+  c2 = color(10, 177, 209);
+  r1 = color(255, 180, 180);
+  r2 = color(255, 35, 35);
+
+  angleMode(DEGREES);
+
+  rowCount = activityTable.getRowCount();
+  for (var i = 0; i < rowCount; i++) {
+    activeYears[i] = activityTable.getNum (i, 0);
+    activity[i] = activityTable.getNum (i, 2);
+    // influence[i] = activityTable.getNum (i, 4); // indegree in context
+    influence[i] = activityTable.getNum (i, 8); // indegree total
+    citedByTarget_[i] = activityTable.getNum (i, 1);
+  }
+
+  firstYear = min(activeYears);
+  lastYear  = max(activeYears);
+  timeSpan = lastYear - firstYear;
+  margin = width/30; 
+  println("margin = " + margin);
+  yearWidth = (width - 2 * margin) / timeSpan;
+
+  // Margins
+  bottomBarsMargin = height - 3.7 * margin;
+  topBarsMargin = 4 * margin;
+  barsHeight = bottomBarsMargin - topBarsMargin;
+  bottomButtonsMargin1 = height - 1.8 * margin;
+  bottomButtonsMargin2 = height - margin;
+  topTextMargin = 2.2 * margin;
+
+
+  for (var i = 0; i < timeSpan + 1; i++) {
+    years.push (firstYear + i);
+  }
+
+  println("All Years" + " " + years);
+
+  // Fill array with inactive years
+  for (var i = 0; i < years.length; i++) {
+    var targetActivity = 0;
+    var targetInfluence = 0;
+    var tagetCited = 0;
+    for (var row = 0; row < activeYears.length; row++) {
+      if (years[i] == activeYears[row]) {
+        targetActivity = activity[row];
+        targetInfluence = influence[row];
+        targetCited = citedByTarget_[row];
+      }
+    }
+    numOfArticles.push(targetActivity);
+    yearIndegree.push(targetInfluence);
+    citedByTarget.push(targetCited);
+  }
+
+  println ("Number of Articles" + " " + numOfArticles);
+  println ("Indegree" + " " + yearIndegree);
+
+  maxArticles = max(numOfArticles);
+  println(maxArticles);
+
+  maxIndegree = max(yearIndegree);
+  println(maxIndegree);
+
+  maxCited = max(citedByTarget);
+
+  for (var i = 0; i < years.length; i++) {
+    yearBars.push (new Bar(i, years[i], numOfArticles[i], yearIndegree[i], citedByTarget[i], width/2));
+  }  
+
+  println(yearBars);
+
+  // Y-axis variables
+  n = 100;
+  spacing = n * (barsHeight / maxArticles);
+  yReach = spacing * 5;
+  println(spacing);
+}
+
+
+function draw() {
+  background(250);
+
+  fill(0);
+  noStroke();
+  textAlign(CENTER, CENTER);
+  textFont(titleFont);
+  textSize(21);
+  text("Activity in the Field", width / 2, margin);
+
+  for (var i = 0; i < yearBars.length; i++) {
+    var posX = map(years[i], firstYear, lastYear, margin, width - 2 * margin);
+    yearBars[i].updateLocation(posX);
+    yearBars[i].display();
+    yearBars[i].getClosestYear();
+  }
+
+  textAlign(LEFT, TOP);
+  textFont(listFont);
+  textSize (12);
+  text("Top 10 words defining the field:", margin, topTextMargin);
+  text("Year:\nPublished studies:\nCited by this study:", margin, topBarsMargin - 0.5 * margin);
+  textFont(titleFont);
+  text("ecosystem, flux, plant, climate, emission, atmospheric, carbon, forest, co2, soil", 6.5 * margin, topTextMargin);
+
+  if (closest != null && mouseY < bottomBarsMargin + margin && mouseY > topBarsMargin) {
+    closest.displayInfo();
+  }
+
+  // Buttons
+  fill(0);
+  textAlign(LEFT, CENTER);
+  textFont(listFont);
+  textSize (12);
+  text("Arrange by:", margin, bottomButtonsMargin1);
+  text("Year", 5 * margin, bottomButtonsMargin1);
+  text("Number of studies", 8 * margin, bottomButtonsMargin1);
+  text("Citations", 13 * margin, bottomButtonsMargin1);
+  //text("Influence on this paper", 14 * margin, bottomButtonsMargin1);
+  //text("Colorize by:", margin, bottomButtonsMargin2);
+  //text("Influence", 5 * margin, bottomButtonsMargin2);
+  //text("Influence on this paper", 8 * margin, bottomButtonsMargin2);
+
+
+  noFill();
+  stroke(0);
+  strokeWeight(1);
+  ellipse(4.5 * margin, bottomButtonsMargin1, 12, 12);
+  ellipse(7.5 * margin, bottomButtonsMargin1, 12, 12);
+  ellipse(12.5 * margin, bottomButtonsMargin1, 12, 12);
+  // ellipse(13.5 * margin, bottomButtonsMargin1, 12, 12);
+  //ellipse(4.5 * margin, bottomButtonsMargin2, 12, 12);
+  //ellipse(7.5 * margin, bottomButtonsMargin2, 12, 12);
+
+
+  if (arrangeBy == 1) {
+    noStroke();
+    fill(0);
+    ellipse(4.5 * margin, bottomButtonsMargin1, 9, 9);     
+  } else if (arrangeBy == 2) {
+    noStroke();
+    fill(0);
+    ellipse(7.5 * margin, bottomButtonsMargin1, 9, 9);    
+  } else if (arrangeBy == 3) {
+    noStroke();
+    fill(0);
+    ellipse(12.5 * margin, bottomButtonsMargin1, 9, 9);
+  }
+  // } else if (arrangeBy == 4) {
+  //   noStroke();
+  //   fill(0);
+  //   ellipse(13.5 * margin, bottomButtonsMargin1, 9, 9);
+  // }
+
+  // if (colorizeByInfluence) {
+  //   noStroke();
+  //   fill(0);
+  //   ellipse(4.5 * margin, bottomButtonsMargin2, 9, 9);
+  // } else {
+  //   noStroke();
+  //   fill(0);
+  //   ellipse(7.5 * margin, bottomButtonsMargin2, 9, 9);
+  // }
+
+  // Gradient
+  text("Citation rate:", width - 8.5 * margin, bottomButtonsMargin1);
+  text("Low", width - 5.8 * margin, bottomButtonsMargin1);
+  text("High", width - 1.9 * margin, bottomButtonsMargin1);
+  for (var i = width - 5 * margin; i < width - 2 * margin; i++) {
+    var inter = map(i, width - 5 * margin, width - 2 * margin, 0, 1);
+    if (colorizeByInfluence) {
+      c = lerpColor(c1, c2, inter);
+    } else {
+      c = lerpColor(r1, r2, inter);
+    }
+    stroke(c);
+    line (i, bottomButtonsMargin1 + 0.5 * yearWidth, i, bottomButtonsMargin1 - 0.5 * yearWidth);
+  }
+
+  // Y-axis
+  textAlign(RIGHT);
+  fill(0);
+  noStroke();
+  textSize(yearWidth - 2);
+  text("Number of Studies", width - margin, topBarsMargin - 0.5 * margin);
+  var counter = 0;
+  for (var y = 0; y <= yReach; y += spacing) {
+    noFill();
+    stroke(0);
+    strokeWeight(1);
+    line((width - 2 * margin) + yearWidth/2 + 1, bottomBarsMargin - y, (width - 2 * margin) + 1.5 * yearWidth - 1, bottomBarsMargin - y);
+    fill(0);
+    noStroke();
+    textAlign(LEFT, CENTER);
+    textSize(yearWidth - 2);
+    text(n * counter, (width - 2 * margin) + 1.5 * yearWidth + 3, bottomBarsMargin - y);
+    counter++;
+  }
+}
+
+
+
+function Bar (order, yr, num, indegree, nCited, x_) {
+  this.order = order;
+  this.year = yr;
+  this.numOfArticles = num;
+  this.yearIndegree = indegree;
+  this.nCitedByTarget = nCited;
+  this.x = x_;
+  this.endX = x_;
+  this.barLength = map(this.numOfArticles, 0, maxArticles, 0, barsHeight);
+  this.colorAmtBlue = map(this.yearIndegree, 0, maxIndegree, 0, 1);
+  this.colorAmtRed = map(this.nCitedByTarget, 1, maxCited, 0, 1);
+  this.c = lerpColor(c1, c2, this.colorAmtBlue);
+
+  if (this.nCitedByTarget == 0) {
+    this.r = color(216, 216, 216);
+  } else {
+    this.r = lerpColor(r1, r2, this.colorAmtRed);
+  }
+
+  this.display = function () {
+    noFill();
+    if (closest == this && mouseY < bottomBarsMargin + margin && mouseY > topBarsMargin) {
+      stroke(83, 104, 120);
+    } else if (colorizeByInfluence) {
+      stroke(this.c);
+    } else {
+      stroke(this.r);
+    }
+    strokeWeight(yearWidth - 2);
+    strokeCap(SQUARE);
+    this.x = this.x + (this.endX - this.x) * damping;
+    line(this.x, bottomBarsMargin, this.x, bottomBarsMargin - this.barLength);
+
+    //Years
+    fill(0);
+    noStroke();
+    textFont(listFont);
+    textSize(yearWidth - 2);
+    textAlign(RIGHT);
+
+    push();
+    translate(this.x, bottomBarsMargin + 4);
+    rotate(-90);
+    if (this.numOfArticles > 0) {
+      text(this.year, 0, 0);
+    }    
+    pop();
+  }
+
+  this.updateLocation = function (newX) {
+    this.endX = newX;
+  }
+
+  // Find closest year bar to mouse
+  this.getClosestYear = function () {
+    var d = dist(this.x, mouseY, mouseX, mouseY);
+    if (d < yearWidth/2 && mouseY < height - 1.5 * margin && mouseY > 2 * margin) {
+      closestDist = d;
+      closest = this;
+    }
+  }
+
+  this.displayInfo = function () {
+    fill(0);
+    noStroke();
+    textAlign(LEFT, TOP);
+    textSize (12);
+    if (this.numOfArticles > 0) {
+      text(this.year, 2 * margin, topBarsMargin - 0.5 * margin);
+      text(this.numOfArticles, 4.4 * margin, topBarsMargin - 0.5 * margin + txtHeight);
+      fill(255, 10, 10);
+      text(this.nCitedByTarget, 4.5 * margin, topBarsMargin - 0.5 * margin + 2 * txtHeight);
+    }
+  }
+}
+
+function sortByActivity(a,b) {
+  if (a.numOfArticles < b.numOfArticles) {
+    return -1;
+  }
+  if (a.numOfArticles > b.numOfArticles) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function sortByYear (a,b) {
+  if (a.order < b.order) {
+    return -1;
+  }
+  if (a.order > b.order) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function sortByInfluence (a,b) {
+  if (a.yearIndegree < b.yearIndegree) {
+    return -1;
+  }
+  if (a.yearIndegree > b.yearIndegree) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function sortByInfluenceOnTarget (a, b) {
+  if (a.nCitedByTarget < b.nCitedByTarget) {
+    return -1;
+  }
+  if (a.nCitedByTarget > b.nCitedByTarget) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+
+function mousePressed() {
+  //ellipse(7.5 * margin, bottomButtonsMargin1, 12, 12);
+  if (mouseX > 4.5 * margin - 6 && mouseX < 6 * margin && mouseY > bottomButtonsMargin1 - 6 && mouseY < bottomButtonsMargin1 + 6) {
+    arrangeBy = 1;    
+    yearBars.sort(sortByYear);
+  }
+
+  if (mouseX > 7.5 * margin - 6 && mouseX < 11.2 * margin && mouseY > bottomButtonsMargin1 - 6 && mouseY < bottomButtonsMargin1 + 6) {
+    arrangeBy = 2;
+    yearBars.sort(sortByYear);   
+    yearBars.sort(sortByActivity);     
+  }  
+
+  if (mouseX > 12.5 * margin - 6 && mouseX < 15.2 * margin && mouseY > bottomButtonsMargin1 - 6 && mouseY < bottomButtonsMargin1 + 6) {
+    arrangeBy = 3;
+    yearBars.sort(sortByYear);
+    yearBars.sort(sortByInfluence);
+  }
+
+  // if (mouseX > 13.5 * margin - 6 && mouseX < 18 * margin && mouseY > bottomButtonsMargin1 - 6 && mouseY < bottomButtonsMargin1 + 6) {
+  //   arrangeBy = 4;
+  //   yearBars.sort(sortByYear);
+  //   yearBars.sort(sortByInfluence);
+  //   yearBars.sort(sortByInfluenceOnTarget);
+  // }
+
+  // if (mouseX > 4.5 * margin - 6 && mouseX < 6.6 * margin && mouseY > bottomButtonsMargin2 - 6 && mouseY < bottomButtonsMargin2 + 6) {
+  //   colorizeByInfluence = true;
+  // } else if (mouseX > 7.5 * margin - 6 && mouseX < 12 * margin && mouseY > bottomButtonsMargin2 - 6 && mouseY < bottomButtonsMargin2 + 6) {
+  //   colorizeByInfluence = false;
+  // }
+}
+
+function keyPressed() {
+  if (keyCode == DOWN_ARROW) {
+    save('ActivityInTheField.jpg');
+  }
+}
+
+
+</script>
