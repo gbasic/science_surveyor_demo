@@ -36,6 +36,8 @@ var LeftListX2;
 var RightListX1;
 var RightListX2;
 
+var howThisWorks = false;
+
 
 function preload() {
   wtcList = loadStrings('methane_outlier_whoToCall.txt');
@@ -110,6 +112,20 @@ function draw() {
   fill(255, 35, 35);
   textSize(12);
   text("Authors cited by this study are in red", RightListX1, bottomYmargin + margin);
+
+  if (howThisWorks) {
+    fill(250);
+    noStroke();
+    rect(0, 2 * margin, width, height - 2 * margin);
+    var str = "Science Surveyor analyzes the context to look for TK# [20? 80?] papers that are most similar to the new study in terms of language. It then looks at citation rates for those papers. It compares those findings against the citations from the new study, and creates two lists journalists can use to come up with ideas for possible sources. The authors who have written similar papers and who are not cited by the new study may be good outside sources and might have a different perspective on the field. Authors who have written similar papers that are highly cited in the field are also identified because they might be considered “influential.”"
+    fill(0);
+    textAlign(LEFT, TOP);
+    textFont(listFont);
+    textSize(18);
+    text(str, margin, 2 * margin, width - margin, height - 2 * margin);
+    textAlign(RIGHT);
+    text("Close", width - margin, height - margin);
+  }
 }
 
 function dottedLine(x1, x2, y) {
@@ -166,6 +182,12 @@ function Contact (line) {
     text (this.name, x1, (topYmargin + y * rowHeight) - rowHeight / 2);
     textAlign (RIGHT, CENTER);
     text (this.email, x2, (topYmargin + y * rowHeight) - rowHeight / 2);
+  }
+}
+
+function mousePressed() {
+  if (mouseX > width - 2 * margin && mouseY > height - 2 * margin) {
+    howThisWorks =! howThisWorks;
   }
 }
 
