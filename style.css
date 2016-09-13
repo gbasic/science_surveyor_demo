@@ -91,15 +91,15 @@ div.content_grey{
 }
 h1{
 	font-family: "futura-pt", helvetica, sans-serif;
-	font-size: 40px;
+	font-size: 30px;
 	font-style: normal;
-	color: #333333;
-	font-weight: 400;
+	color: #FFFFFF;
+	font-weight: 100;
 	text-align: center;
 	margin-left:auto;
 	margin-right:auto;
 	margin-bottom: 0px;
-	margin-top: 0px;
+	margin-top: 30px;
 	padding-top: 0px;
 	padding-bottom: 0px;
 }
@@ -108,7 +108,7 @@ h2{
 	width: 650px;
 	font-size: 16px;
 	font-style: normal;
-	color: #333333;
+	color: #FFFFFF;
 	font-weight: 300;
 	font-style: italic;
 	text-align: center;
@@ -126,7 +126,7 @@ h3{
 	font-style: normal;
 	font-size: 18px;
 	font-weight: 400;
-	color: #333333;
+	color: #FFFFFF;
 	text-align: center;
 	margin-left:auto;
 	margin-right:auto;

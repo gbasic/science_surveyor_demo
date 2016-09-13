@@ -16,6 +16,19 @@
 </head>
 <script type="text/javascript">
 
+  var fiveOldestTable;
+  var rowCount;
+  var fiveOldestID = [];
+  var fiveOldestName = [];
+  var fiveOldestYear = [];
+  var fiveOldestIsCited = [];
+
+  var fiveMostCitedTable;
+  var fiveMostCitedID = [];
+  var fiveMostCitedName = [];
+  var fiveMostCitedYear = [];
+  var fiveMostCitedIsCited = [];
+
   var margin;
   var leftXmargin;
   var topYListMargin1;
@@ -25,15 +38,18 @@
   var topYSubtitleMargin2;
   var topYSubtitleMargin3;
   var rowHeight;
-  var rightXmargin; 
+  var rightXmargin;
 
   function preload() {
     titleFont = loadFont ('Univers-Bold.otf');
     listFont = loadFont ('Univers.otf');
+    fiveOldestTable = loadTable("methane_outlier_fiveOldest.txt", "tsv", "header");
+    fiveMostCitedTable = loadTable("methane_outlier_fiveMostCited.txt", "tsv", "header");
   }
 
   function setup() {
     createCanvas(990, 980);
+    readData();
 
     margin = width/30;
     leftXmargin = 0.5 * margin;
@@ -45,7 +61,6 @@
     topYSubtitleMargin1 = 2.7 * margin;
     topYSubtitleMargin2 = topYListMargin1 + 5 * rowHeight + topYSubtitleMargin1;
     topYSubtitleMargin3 = topYListMargin1 * 2 + 10 * rowHeight + topYSubtitleMargin1;
-    
   }
 
   function draw() {
@@ -75,7 +90,18 @@
       dottedLine(leftXmargin, rightXmargin, topYListMargin3 + i * rowHeight);
     }
 
-
+    // Lists
+    textFont(listFont);
+    fill(0);
+    noStroke();
+    for (var i = 0; i < 5; i++) {
+      textAlign(LEFT, CENTER);
+      text(fiveOldestName[i], margin, topYListMargin1 + rowHeight/2 + i * rowHeight);
+      text(fiveMostCitedName[i], margin, topYListMargin2 + rowHeight/2 + i * rowHeight);
+      textAlign(RIGHT, CENTER);
+      text(fiveOldestYear[i], width - margin, topYListMargin1 + rowHeight/2 + i * rowHeight);
+      text(fiveMostCitedYear[i], width - margin, topYListMargin2 + rowHeight/2 + i * rowHeight);
+    }
   }
 
   function dottedLine(x1, x2, y) {
@@ -89,6 +115,19 @@
       strokeCap(ROUND);
       point(x, y);
     }
+  }
+
+  function readData() {
+    rowCount = fiveOldestTable.getRowCount();
+    for (var i = 0; i < rowCount; i++) {
+      fiveOldestID = fiveOldestTable.getColumn("#Columns: article key");
+      fiveOldestName = fiveOldestTable.getColumn("title");
+      fiveOldestYear = fiveOldestTable.getColumn("year");
+      fiveMostCitedID = fiveMostCitedTable.getColumn("#Columns: article key");
+      fiveMostCitedName = fiveMostCitedTable.getColumn("title");
+      fiveMostCitedYear = fiveMostCitedTable.getColumn("year");
+    }
+    println(fiveOldestID);
   }
 
 
