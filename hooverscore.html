@@ -16,15 +16,26 @@
 </head>
 <script type="text/javascript">
 
+var str;
+var topTextMargin;
+var rectSize;
+var c1;
+var c2;
+
 function preload() {
   titleFont = loadFont ('Univers-Bold.otf');
   listFont = loadFont ('Univers.otf');
 }
 
 function setup() {
-  createCanvas(990, 550);
+  createCanvas(990, 650);
 
   margin = width/30;
+  topTextMargin = 3 * margin;
+  rectSize = (width - 2 * margin) / 25;
+  c1 = color(195, 222, 232);
+  c2 = color(10, 177, 209);
+  str = "We identified a tantalizing pattern that, if substantiated, might help journalists identify a study as “mainstream” or “outlier.” The latter would suggest a need for greater scrutiny. The Agreement Score indicates whether the new study cites similar ones. Initial research suggests that studies with atypical (perhaps “outlier”) findings have low agreement scores—they cite fewer papers similar to them. Studies with usual (perhaps “consensus-like”) results have high agreement scores—they cite more papers that are similar."
 }
 
 function draw() {
@@ -37,7 +48,57 @@ function draw() {
   textSize(21);
   text("Mainstream or Outlier?", width / 2, margin);
 
+  textFont(listFont);
+  textAlign(LEFT, TOP);
+  textSize(18);
+  text(str, margin, topTextMargin, width - 2 * margin, height - 5 * margin);
+
+  // Hooverscore Rectangle
+  rectMode(CENTER);
+  stroke(0);
+  noFill();
+  strokeWeight(2);
+  rect(width/2, height/2, 3 * margin, 3 * margin);
+  fill(0);
+  noStroke();
+  textSize(60);
+  textFont(listFont);
+  textAlign(CENTER, CENTER);
+  text("0", width/2, height/2);
+  textSize(14);
+  text("Agreement Score", width/2, height/2 - 1.9 * margin);
+
+  // Bar
+  textSize(14);
+  textAlign(LEFT, BOTTOM);
+  text("Top 25 most similar studies (hover over tiles to display info):", margin, height/2 + 3.7 * margin);
+
+  rectMode(CORNER);
+  textAlign(CENTER, CENTER);
+  for (var i = 0; i < 25; i ++) {
+  	fill(c1);
+  	stroke(c2);
+  	rect(margin + i * rectSize, height/2 + 4 * margin, rectSize, rectSize);
+  	fill(0);
+  	noStroke();
+  	text(i + 1, margin + i * rectSize + rectSize / 2, height/2 + 4 * margin + rectSize / 2);
+  }
+
+  noFill();
+  stroke(255, 35, 35);
+  rect(margin, height/2 + 7.5 * margin, rectSize, rectSize);
+  noStroke();
+  fill(255, 35, 35);
+  textAlign(LEFT, CENTER);
+  text("Cited studies are outlined in red", 2.5 * margin, height/2 + 7.5 * margin + rectSize/2);
+
+  if (mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
+  	fill(0);
+  	text("Name of the paper will appear here", margin, height/2 + 6 * margin);
+  	text("Author name will appear here", margin, height/2 + 6.6 * margin);
+  }
 }
+
 
 
 </script>

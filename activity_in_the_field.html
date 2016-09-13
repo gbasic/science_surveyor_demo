@@ -78,7 +78,7 @@ function preload () {
 
 function setup() {
   createCanvas(990, 580);
-
+  textSize(14);
   txtHeight = (textAscent(listFont) + textDescent(listFont));
   println ("text height " + txtHeight);
 
@@ -181,11 +181,11 @@ function draw() {
 
   textAlign(LEFT, TOP);
   textFont(listFont);
-  textSize (12);
+  textSize (14);
   text("Top 10 words defining the field:", margin, topTextMargin);
   text("Year:\nPublished studies:\nCited by this study:", margin, topBarsMargin - 0.5 * margin);
   textFont(titleFont);
-  text("ecosystem, flux, plant, climate, emission, atmospheric, carbon, forest, co2, soil", 6.5 * margin, topTextMargin);
+  text("ecosystem, flux, plant, climate, emission, atmospheric, carbon, forest, co2, soil", 7.5 * margin, topTextMargin);
 
   if (closest != null && mouseY < bottomBarsMargin + margin && mouseY > topBarsMargin) {
     closest.displayInfo();
@@ -350,12 +350,12 @@ function Bar (order, yr, num, indegree, nCited, x_) {
     fill(0);
     noStroke();
     textAlign(LEFT, TOP);
-    textSize (12);
+    textSize (14);
     if (this.numOfArticles > 0) {
-      text(this.year, 2 * margin, topBarsMargin - 0.5 * margin);
-      text(this.numOfArticles, 4.4 * margin, topBarsMargin - 0.5 * margin + txtHeight);
+      text(this.year, 2.2 * margin, topBarsMargin - 0.5 * margin);
+      text(this.numOfArticles, 4.8 * margin, topBarsMargin - 0.5 * margin + txtHeight);
       fill(255, 10, 10);
-      text(this.nCitedByTarget, 4.5 * margin, topBarsMargin - 0.5 * margin + 2 * txtHeight);
+      text(this.nCitedByTarget, 5 * margin, topBarsMargin - 0.5 * margin + 2 * txtHeight);
     }
   }
 }

@@ -16,28 +16,80 @@
 </head>
 <script type="text/javascript">
 
-function preload() {
-  titleFont = loadFont ('Univers-Bold.otf');
-  listFont = loadFont ('Univers.otf');
-}
+  var margin;
+  var leftXmargin;
+  var topYListMargin1;
+  var topYListMargin2;
+  var topYListMargin3;
+  var topYSubtitleMargin1;
+  var topYSubtitleMargin2;
+  var topYSubtitleMargin3;
+  var rowHeight;
+  var rightXmargin; 
 
-function setup() {
-  createCanvas(990, 550);
+  function preload() {
+    titleFont = loadFont ('Univers-Bold.otf');
+    listFont = loadFont ('Univers.otf');
+  }
 
-  margin = width/30;
-}
+  function setup() {
+    createCanvas(990, 980);
 
-function draw() {
-  background(250);
+    margin = width/30;
+    leftXmargin = 0.5 * margin;
+    rightXmargin = width - 0.5 * margin;
+    rowHeight = 36;
+    topYListMargin1 = 3.5 * margin;
+    topYListMargin2 = topYListMargin1 * 2 + 5 * rowHeight;
+    topYListMargin3 = topYListMargin1 * 3 + 10 * rowHeight;
+    topYSubtitleMargin1 = 2.7 * margin;
+    topYSubtitleMargin2 = topYListMargin1 + 5 * rowHeight + topYSubtitleMargin1;
+    topYSubtitleMargin3 = topYListMargin1 * 2 + 10 * rowHeight + topYSubtitleMargin1;
+    
+  }
 
-  fill(0);
-  noStroke();
-  textAlign(CENTER, CENTER);
-  textFont(titleFont);
-  textSize(21);
-  text("Studies You Might Want to See", width / 2, margin);
+  function draw() {
+    background(250);
 
-}
+    fill(0);
+    noStroke();
+    textAlign(CENTER, CENTER);
+    textFont(titleFont);
+    textSize(21);
+    text("Studies You Might Want to See", width / 2, margin);
+
+    // Subtitles
+    textSize(14);
+    text("Five oldest studies in the context:", width / 2, topYSubtitleMargin1);
+    text("Five most cited studies in the context:", width / 2, topYSubtitleMargin2);
+    text("Five most cited studies in recent years:", width / 2, topYSubtitleMargin3);
+
+    textAlign(LEFT, BOTTOM);
+    textFont(listFont);
+    fill(255, 35, 35);
+    text("Cited studies are in red", margin, height - margin);
+
+    for (var i = 0; i <= 5; i++) {
+      dottedLine(leftXmargin, rightXmargin, topYListMargin1 + i * rowHeight);
+      dottedLine(leftXmargin, rightXmargin, topYListMargin2 + i * rowHeight);
+      dottedLine(leftXmargin, rightXmargin, topYListMargin3 + i * rowHeight);
+    }
+
+
+  }
+
+  function dottedLine(x1, x2, y) {
+    for (var i = 0; i <= 180; i++) {
+      var x = lerp(x1, x2, i / 180);
+      stroke(0, 200);
+      noFill();
+      strokeWeight(3);
+      strokeCap(ROUND);
+      strokeWeight(2);
+      strokeCap(ROUND);
+      point(x, y);
+    }
+  }
 
 
 </script>

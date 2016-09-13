@@ -62,7 +62,7 @@ function setup() {
   RightListX1 = width/2 + margin;
   RightListX2 = width - margin;
 
-  println (margin);
+  println("Row Height: " + rowHeight);
   readData();
   list1 = contacts.slice();
   list2 = contacts.slice();
@@ -94,7 +94,6 @@ function draw() {
   text("Who to Call?", width / 2, margin);
 
   // List Titles
-  //textFont(listFont);
   textSize(14);
   text("Authors doing similar work, not cited by this paper:", leftXmargin + columnWidth/2, 2.7 * margin);
   text("Most cited authors doing similar work:", rightXmargin - columnWidth/2, 2.7 * margin);
@@ -109,6 +108,7 @@ function draw() {
 
   textAlign(LEFT, CENTER);
   fill(255, 35, 35);
+  textSize(12);
   text("Authors cited by this study are in red", RightListX1, bottomYmargin + margin);
 }
 
