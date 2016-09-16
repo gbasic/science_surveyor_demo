@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script src="//use.typekit.net/tzg3lni.js"></script>
-  <script>try{Typekit.load();}catch(e){}</script>
+  <script src="https://use.typekit.net/mcw0ona.js"></script>
+  <script>try{Typekit.load({ async: true });}catch(e){}</script>
   <link rel="stylesheet" type="text/css" href="style.css">
   <script type="text/javascript" src="p5/p5.js"></script>
   <style>
@@ -16,33 +16,33 @@
 </head>
 <script type="text/javascript">
 
-var activityTable;
-var activeYears = []
-var years = [];
-var timeSpan;
-var numOfArticles = [];
-var activity = [];
-var yearIndegree = [];
-var influence = [];
-var citedByTarget = [];
-var citedByTarget_ = [];
-var maxArticles;
-var maxIndegree;
-var maxCited;
-var firstYear;
-var lastYear;
-var rowCount;
-
+  var activityTable;
+  var activeYears = []
+  var years = [];
+  var timeSpan;
+  var numOfArticles = [];
+  var activity = [];
+  var yearIndegree = [];
+  var influence = [];
+  var citedByTarget = [];
+  var citedByTarget_ = [];
+  var maxArticles;
+  var maxIndegree;
+  var maxCited;
+  var firstYear;
+  var lastYear;
+  var rowCount;
 
 // Margins
 var margin;
 var yearWidth;
 var bottomBarsMargin;
-var bottomButtonsMargin1;
-var bottomButtonsMargin2;
+var bottomButtonsMargin;
+var bottomMargin;
 var topBarsMargin;
 var barsHeight;
 var topTextMargin;
+var rightTxtMargin;
 
 // Y-Axis
 var n;
@@ -53,11 +53,8 @@ var titleFont;
 var listFont;
 var txtHeight;
 
-var colorizeByInfluence = true;
 var c1;
 var c2;
-var r1;
-var r2;
 var c;
 
 
@@ -68,16 +65,30 @@ var closest;
 
 var damping = 0.3;
 var arrangeBy = 1;
+var arrange1 = "Year";
+var arrange2 = "Number of studies";
+var arrange3 = "Citations";
+var buttonX1;
+var buttonX2;
+var buttonX3;
+
+var howThisWorks = false;
+var txt;
+var hyperlink;
+
+p5.disableFriendlyErrors = true;
 
 function preload () {
   //activityTable = loadTable ("Methane_Outlier_Timeline.txt", "tsv", "header");
   activityTable = loadTable ("methane_outlier_year_stats.txt", "tsv", "header");
-  titleFont = loadFont ('Univers-Bold.otf');
-  listFont = loadFont ('Univers.otf');
+  // titleFont = loadFont ('Univers-Bold.otf');
+  // listFont = loadFont ('Univers.otf');
+  titleFont = loadFont('fonts/Rubik-Medium.ttf');
+  listFont = loadFont ('fonts/Rubik-Regular.ttf');
 }
 
 function setup() {
-  createCanvas(990, 580);
+  createCanvas(990, 600);
   textSize(14);
   txtHeight = (textAscent(listFont) + textDescent(listFont));
   println ("text height " + txtHeight);
@@ -106,12 +117,16 @@ function setup() {
   yearWidth = (width - 2 * margin) / timeSpan;
 
   // Margins
-  bottomBarsMargin = height - 3.7 * margin;
+  bottomBarsMargin = height - 4 * margin;
   topBarsMargin = 4 * margin;
   barsHeight = bottomBarsMargin - topBarsMargin;
-  bottomButtonsMargin1 = height - 1.8 * margin;
-  bottomButtonsMargin2 = height - margin;
+  bottomButtonsMargin = height - 2.2 * margin;
+  bottomMargin = height - margin;
   topTextMargin = 2.2 * margin;
+  rightTxtMargin = width - margin;
+  buttonX1 = 4.5 * margin;
+  buttonX2 = 7.5 * margin;
+  buttonX3 = 13.5 * margin;
 
 
   for (var i = 0; i < timeSpan + 1; i++) {
@@ -137,22 +152,13 @@ function setup() {
     citedByTarget.push(targetCited);
   }
 
-  println ("Number of Articles" + " " + numOfArticles);
-  println ("Indegree" + " " + yearIndegree);
-
   maxArticles = max(numOfArticles);
-  println(maxArticles);
-
   maxIndegree = max(yearIndegree);
-  println(maxIndegree);
-
   maxCited = max(citedByTarget);
 
   for (var i = 0; i < years.length; i++) {
     yearBars.push (new Bar(i, years[i], numOfArticles[i], yearIndegree[i], citedByTarget[i], width/2));
   }  
-
-  println(yearBars);
 
   // Y-axis variables
   n = 100;
@@ -195,77 +201,49 @@ function draw() {
   fill(0);
   textAlign(LEFT, CENTER);
   textFont(listFont);
-  textSize (12);
-  text("Arrange by:", margin, bottomButtonsMargin1);
-  text("Year", 5 * margin, bottomButtonsMargin1);
-  text("Number of studies", 8 * margin, bottomButtonsMargin1);
-  text("Citations", 13 * margin, bottomButtonsMargin1);
-  //text("Influence on this paper", 14 * margin, bottomButtonsMargin1);
-  //text("Colorize by:", margin, bottomButtonsMargin2);
-  //text("Influence", 5 * margin, bottomButtonsMargin2);
-  //text("Influence on this paper", 8 * margin, bottomButtonsMargin2);
-
+  textSize (14);
+  text("Arrange by:", margin, bottomButtonsMargin);
+  text(arrange1, buttonX1 + 0.5 * margin, bottomButtonsMargin);
+  text(arrange2, buttonX2 + 0.5 * margin, bottomButtonsMargin);
+  text(arrange3, buttonX3 + 0.5 * margin, bottomButtonsMargin);
 
   noFill();
   stroke(0);
   strokeWeight(1);
-  ellipse(4.5 * margin, bottomButtonsMargin1, 12, 12);
-  ellipse(7.5 * margin, bottomButtonsMargin1, 12, 12);
-  ellipse(12.5 * margin, bottomButtonsMargin1, 12, 12);
-  // ellipse(13.5 * margin, bottomButtonsMargin1, 12, 12);
-  //ellipse(4.5 * margin, bottomButtonsMargin2, 12, 12);
-  //ellipse(7.5 * margin, bottomButtonsMargin2, 12, 12);
-
+  ellipse(buttonX1, bottomButtonsMargin, 12, 12);
+  ellipse(buttonX2, bottomButtonsMargin, 12, 12);
+  ellipse(buttonX3, bottomButtonsMargin, 12, 12);
 
   if (arrangeBy == 1) {
     noStroke();
     fill(0);
-    ellipse(4.5 * margin, bottomButtonsMargin1, 9, 9);     
+    ellipse(buttonX1, bottomButtonsMargin, 9, 9);     
   } else if (arrangeBy == 2) {
     noStroke();
     fill(0);
-    ellipse(7.5 * margin, bottomButtonsMargin1, 9, 9);    
+    ellipse(buttonX2, bottomButtonsMargin, 9, 9);    
   } else if (arrangeBy == 3) {
     noStroke();
     fill(0);
-    ellipse(12.5 * margin, bottomButtonsMargin1, 9, 9);
+    ellipse(buttonX3, bottomButtonsMargin, 9, 9);
   }
-  // } else if (arrangeBy == 4) {
-  //   noStroke();
-  //   fill(0);
-  //   ellipse(13.5 * margin, bottomButtonsMargin1, 9, 9);
-  // }
 
-  // if (colorizeByInfluence) {
-  //   noStroke();
-  //   fill(0);
-  //   ellipse(4.5 * margin, bottomButtonsMargin2, 9, 9);
-  // } else {
-  //   noStroke();
-  //   fill(0);
-  //   ellipse(7.5 * margin, bottomButtonsMargin2, 9, 9);
-  // }
 
   // Gradient
-  text("Citation rate:", width - 8.5 * margin, bottomButtonsMargin1);
-  text("Low", width - 5.8 * margin, bottomButtonsMargin1);
-  text("High", width - 1.9 * margin, bottomButtonsMargin1);
+  text("Citation rate:  Low", width - 8.7 * margin, bottomButtonsMargin);
+  text("High", width - 1.9 * margin, bottomButtonsMargin);
   for (var i = width - 5 * margin; i < width - 2 * margin; i++) {
     var inter = map(i, width - 5 * margin, width - 2 * margin, 0, 1);
-    if (colorizeByInfluence) {
-      c = lerpColor(c1, c2, inter);
-    } else {
-      c = lerpColor(r1, r2, inter);
-    }
+    c = lerpColor(c1, c2, inter);    
     stroke(c);
-    line (i, bottomButtonsMargin1 + 0.5 * yearWidth, i, bottomButtonsMargin1 - 0.5 * yearWidth);
+    line (i, bottomButtonsMargin + 0.5 * yearWidth, i, bottomButtonsMargin - 0.5 * yearWidth);
   }
 
   // Y-axis
-  textAlign(RIGHT);
+  textAlign(RIGHT, CENTER);
   fill(0);
   noStroke();
-  textSize(yearWidth - 2);
+  textSize(yearWidth);
   text("Number of Studies", width - margin, topBarsMargin - 0.5 * margin);
   var counter = 0;
   for (var y = 0; y <= yReach; y += spacing) {
@@ -280,9 +258,42 @@ function draw() {
     text(n * counter, (width - 2 * margin) + 1.5 * yearWidth + 3, bottomBarsMargin - y);
     counter++;
   }
+
+  hyperlink = "How this works";
+  textAlign(RIGHT, CENTER);
+  textSize(12);
+  fill(0);
+  text(hyperlink, rightTxtMargin, bottomMargin);
+  noFill();
+  stroke(0);
+  strokeWeight(0.9);
+  line(rightTxtMargin, bottomMargin + textDescent() + 3, rightTxtMargin - textWidth(hyperlink), bottomMargin + textDescent() + 3);
+
+  if (howThisWorks) {
+    hyperlink = "Close";
+    fill(250);
+    noStroke();
+    rect(0, 2 * margin, width, height - 2 * margin);
+    var str = "Science Surveyor can arrange the articles in the context in several ways to provide information about history and patterns of publishing. (The “field” is defined by citations and by language similarity; Science Surveyor reveals the top 10 words in the context so the terms of the “field” are clear.) The context can be arranged in straight chronology, or by number of papers published per year, or by citations per year. Journalists can use these different views to identify active or significant years for the field and to see the duration of the field. In future, Science Surveyor will provide a list of all the papers for each year."
+    fill(0);
+    textAlign(LEFT, TOP);
+    textFont(listFont);
+    textSize(14);
+    text(str, 3 * margin, 2 * margin, width - 6 * margin, height - 2 * margin);
+    textAlign(RIGHT, CENTER);
+    textSize(14);
+    text(hyperlink, width - margin, bottomMargin);
+    stroke(0);
+    strokeWeight(0.9);
+    line(rightTxtMargin, bottomMargin + textDescent() + 3, rightTxtMargin - textWidth(hyperlink), bottomMargin + textDescent() + 3);
+  }
+
+  if (mouseX > rightTxtMargin - textWidth(hyperlink) && mouseX < rightTxtMargin && mouseY > bottomMargin - textAscent() && mouseY < bottomMargin + textDescent() + 3) {
+    cursor(HAND);
+  } else {
+    cursor(ARROW);
+  }
 }
-
-
 
 function Bar (order, yr, num, indegree, nCited, x_) {
   this.order = order;
@@ -307,10 +318,8 @@ function Bar (order, yr, num, indegree, nCited, x_) {
     noFill();
     if (closest == this && mouseY < bottomBarsMargin + margin && mouseY > topBarsMargin) {
       stroke(83, 104, 120);
-    } else if (colorizeByInfluence) {
-      stroke(this.c);
     } else {
-      stroke(this.r);
+      stroke(this.c);
     }
     strokeWeight(yearWidth - 2);
     strokeCap(SQUARE);
@@ -406,36 +415,26 @@ function sortByInfluenceOnTarget (a, b) {
 
 
 function mousePressed() {
-  //ellipse(7.5 * margin, bottomButtonsMargin1, 12, 12);
-  if (mouseX > 4.5 * margin - 6 && mouseX < 6 * margin && mouseY > bottomButtonsMargin1 - 6 && mouseY < bottomButtonsMargin1 + 6) {
+  if (mouseX > buttonX1 - 6 && mouseX < buttonX1 + 6 + 0.5 * margin + textWidth(arrange1) && mouseY > bottomButtonsMargin - 6 && mouseY < bottomButtonsMargin + 6) {
     arrangeBy = 1;    
     yearBars.sort(sortByYear);
   }
 
-  if (mouseX > 7.5 * margin - 6 && mouseX < 11.2 * margin && mouseY > bottomButtonsMargin1 - 6 && mouseY < bottomButtonsMargin1 + 6) {
+  if (mouseX > buttonX2 - 6 && mouseX < buttonX2 + 6 + 0.5 * margin + textWidth(arrange2) && mouseY > bottomButtonsMargin - 6 && mouseY < bottomButtonsMargin + 6) {
     arrangeBy = 2;
     yearBars.sort(sortByYear);   
     yearBars.sort(sortByActivity);     
-  }  
+  }
 
-  if (mouseX > 12.5 * margin - 6 && mouseX < 15.2 * margin && mouseY > bottomButtonsMargin1 - 6 && mouseY < bottomButtonsMargin1 + 6) {
+  if (mouseX > buttonX3 - 6 && mouseX < buttonX3 + 6 + 0.5 * margin + textWidth(arrange3) && mouseY > bottomButtonsMargin - 6 && mouseY < bottomButtonsMargin + 6) {
     arrangeBy = 3;
     yearBars.sort(sortByYear);
     yearBars.sort(sortByInfluence);
   }
 
-  // if (mouseX > 13.5 * margin - 6 && mouseX < 18 * margin && mouseY > bottomButtonsMargin1 - 6 && mouseY < bottomButtonsMargin1 + 6) {
-  //   arrangeBy = 4;
-  //   yearBars.sort(sortByYear);
-  //   yearBars.sort(sortByInfluence);
-  //   yearBars.sort(sortByInfluenceOnTarget);
-  // }
-
-  // if (mouseX > 4.5 * margin - 6 && mouseX < 6.6 * margin && mouseY > bottomButtonsMargin2 - 6 && mouseY < bottomButtonsMargin2 + 6) {
-  //   colorizeByInfluence = true;
-  // } else if (mouseX > 7.5 * margin - 6 && mouseX < 12 * margin && mouseY > bottomButtonsMargin2 - 6 && mouseY < bottomButtonsMargin2 + 6) {
-  //   colorizeByInfluence = false;
-  // }
+  if (mouseX > rightTxtMargin - textWidth(hyperlink) && mouseX < rightTxtMargin && mouseY > bottomMargin - textAscent() && mouseY < bottomMargin + textDescent() + 3) {
+    howThisWorks =! howThisWorks;
+  }
 }
 
 function keyPressed() {

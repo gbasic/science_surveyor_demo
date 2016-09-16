@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <script src="//use.typekit.net/tzg3lni.js"></script>
-  <script>try{Typekit.load();}catch(e){}</script>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript" src="p5/p5.js"></script>
-  <style>
-    html, body{
-      margin: 0;
-      padding: 0;
-      background: white;
-    }
-  </style>
+	<meta charset="utf-8">
+	<script src="https://use.typekit.net/mcw0ona.js"></script>
+	<script>try{Typekit.load({ async: true });}catch(e){}</script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="p5/p5.js"></script>
+	<style>
+		html, body{
+			margin: 0;
+			padding: 0;
+			background: white;
+		}
+	</style>
 </head>
 <script type="text/javascript">
 
-var str;
-var topTextMargin;
-var rectSize;
-var c1;
-var c2;
+	var str;
+	var topTextMargin;
+	var rectSize;
+	var c1;
+	var c2;
 
-function preload() {
-  titleFont = loadFont ('Univers-Bold.otf');
-  listFont = loadFont ('Univers.otf');
-}
+	function preload() {
+  		titleFont = loadFont('fonts/Rubik-Medium.ttf');
+  		listFont = loadFont ('fonts/Rubik-Regular.ttf');
+	}
 
-function setup() {
-  createCanvas(990, 650);
+	function setup() {
+		createCanvas(990, 650);
 
-  margin = width/30;
-  topTextMargin = 3 * margin;
-  rectSize = (width - 2 * margin) / 25;
-  c1 = color(195, 222, 232);
-  c2 = color(10, 177, 209);
-  str = "We identified a tantalizing pattern that, if substantiated, might help journalists identify a study as “mainstream” or “outlier.” The latter would suggest a need for greater scrutiny. The Agreement Score indicates whether the new study cites similar ones. Initial research suggests that studies with atypical (perhaps “outlier”) findings have low agreement scores—they cite fewer papers similar to them. Studies with usual (perhaps “consensus-like”) results have high agreement scores—they cite more papers that are similar."
-}
+		margin = width/30;
+		topTextMargin = 3 * margin;
+		rectSize = (width - 2 * margin) / 25;
+		c1 = color(195, 222, 232);
+		c2 = color(10, 177, 209);
+		str = "We identified a tantalizing pattern that, if substantiated, might help journalists identify a study as “mainstream” or “outlier.” The latter would suggest a need for greater scrutiny. The Agreement Score indicates whether the new study cites similar ones. Initial research suggests that studies with atypical (perhaps “outlier”) findings have low agreement scores—they cite fewer papers similar to them. Studies with usual (perhaps “consensus-like”) results have high agreement scores—they cite more papers that are similar."
+	}
 
-function draw() {
-  background(250);
+	function draw() {
+		background(250);
 
-  fill(0);
-  noStroke();
-  textAlign(CENTER, CENTER);
-  textFont(titleFont);
-  textSize(21);
-  text("Mainstream or Outlier?", width / 2, margin);
+		fill(0);
+		noStroke();
+		textAlign(CENTER, CENTER);
+		textFont(titleFont);
+		textSize(21);
+		text("Mainstream or Outlier?", width / 2, margin);
 
-  textFont(listFont);
-  textAlign(LEFT, TOP);
-  textSize(18);
-  text(str, margin, topTextMargin, width - 2 * margin, height - 5 * margin);
+		textFont(listFont);
+		textAlign(LEFT, TOP);
+		textSize(18);
+		text(str, margin, topTextMargin, width - 2 * margin, height - 5 * margin);
 
   // Hooverscore Rectangle
   rectMode(CENTER);

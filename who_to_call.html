@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script src="//use.typekit.net/tzg3lni.js"></script>
-  <script>try{Typekit.load();}catch(e){}</script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Rubik:400,500" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="style.css">
   <script type="text/javascript" src="p5/p5.js"></script>
+  <script type='text/javascript' src="p5/p5.dom.js"></script>
   <style>
     html, body{
       margin: 0;
@@ -19,73 +19,69 @@
 
 var wtcList = [];
 var contacts = [];
-var list1 = [];
-var list2 = [];
+var wtcList = [];
 var titleFont;
 var listFont;
 
 var margin;
-var titleBreak;
-var bottomYmargin;
-var leftXmargin;
-var rightXmargin;
+var topListMargin;
+var bottomMargin;
+var headerMargin;
+var leftMargin;
+var rightMargin;
+var rightTxtMargin;
 var rowHeight;
-var columnWidth;
-var LeftListX1;
-var LeftListX2;
-var RightListX1;
-var RightListX2;
+var listX1;
+var listX2;
+var listX3;
 
 var howThisWorks = false;
+var txt;
+var hyperlink;
 
 
 function preload() {
   wtcList = loadStrings('methane_outlier_whoToCall.txt');
-  titleFont = loadFont ('Univers-Bold.otf');
-  listFont = loadFont ('Univers.otf');
+  //titleFont = loadFont ('Univers-Bold.otf');
+  //listFont = loadFont ('Univers.otf');
+  titleFont = loadFont('fonts/Rubik-Medium.ttf');
+  listFont = loadFont('fonts/Rubik-Regular.ttf');
 }
 
 
 function setup() {
-  createCanvas(990, 550);
-  // var x = (windowWidth - width) / 2;
-  // var y = (windowHeight - height) / 2;
-  // canvas.position(x, y);
+  createCanvas(990, 580);
 
   margin = width/30;
-  bottomYmargin = height - 2 * margin;
-  topYmargin = 3.5 * margin;
-  leftXmargin = 0.5 * margin;
-  rightXmargin = width - 0.5 * margin;
-  rowHeight = (bottomYmargin - topYmargin) / 10;
-  columnWidth = width/2 - 0.3 * margin - leftXmargin;
-  LeftListX1 = margin;
-  LeftListX2 = width/2 - margin;
-  RightListX1 = width/2 + margin;
-  RightListX2 = width - margin;
+  rowHeight = 36;
+  headerMargin = 3.5 * margin
+  topListMargin = headerMargin + rowHeight / 2;
+  bottomMargin = height - margin;
+  leftMargin = 0.5 * margin;
+  rightTxtMargin = width - margin;
+  rightMargin = width - 0.5 * margin;
+  listX1 = margin;
+  listX2 = width/2 - 6 * margin;
+  listX3 = width/2 + 5 * margin;
 
   println("Row Height: " + rowHeight);
   readData();
-  list1 = contacts.slice();
-  list2 = contacts.slice();
-  list1.sort(sortBySimilarity);
-  list2.sort(sortByAuthority);
+  wtcList = contacts.slice();
+  wtcList.sort(sortByAuthority);
 
-  //removeCitedAuthors(contacts);
-  println(list1);
-  println(list2);
+  // txt = createElement('p', 'How this works');
+  // txt.position(100, 10);
+
 }
 
 
 function draw() {
   background(250);
 
-
-  for (var y = topYmargin; y <= bottomYmargin + 1; y += rowHeight) {
-    dottedLine(leftXmargin, width/2 - 0.3 * margin, y);
-    dottedLine(width/2 + 0.3 * margin, rightXmargin, y);
+  // Dotted Lines
+  for (var i = 0; i <= 10; i++) {
+    dottedLine(leftMargin, rightMargin, topListMargin + i * rowHeight);
   }
-
 
   // Title
   fill(0);
@@ -93,27 +89,42 @@ function draw() {
   textAlign(CENTER, CENTER);
   textFont(titleFont);
   textSize(21);
-  text("Who to Call?", width / 2, margin);
+  text("Who to Call?", width / 2, listX1);
 
-  // List Titles
+  // List Title
   textSize(14);
-  text("Authors doing similar work, not cited by this paper:", leftXmargin + columnWidth/2, 2.7 * margin);
-  text("Most cited authors doing similar work:", rightXmargin - columnWidth/2, 2.7 * margin);
+  text("Highly cited authors doing similar work:", width / 2, 2.2 * margin);
 
-  // List 1
+  // Header
+  textAlign(LEFT, CENTER);
+  text("Name", listX1, headerMargin);
+  text("Email", listX2, headerMargin);
+  text("Institution", listX3, headerMargin);
+
+  // WTC List
   textFont(listFont);
   textSize (14);
   for (var i = 0; i < 10; i++) {
-    list1[i].display(LeftListX1, LeftListX2, i+1);
-    list2[i].display(RightListX1, RightListX2, i+1);
+    wtcList[i].display(listX1, listX2, listX3, i+1);
   }
 
   textAlign(LEFT, CENTER);
   fill(255, 35, 35);
   textSize(12);
-  text("Authors cited by this study are in red", RightListX1, bottomYmargin + margin);
+  text("Authors cited by this study are in red", listX1, bottomMargin);
+
+  hyperlink = "How this works";
+  textAlign(RIGHT, CENTER);
+  fill(0);
+  text(hyperlink, rightTxtMargin, bottomMargin);
+  noFill();
+  stroke(0);
+  strokeWeight(0.9);
+  line(rightTxtMargin, bottomMargin + textDescent() + 3, rightTxtMargin - textWidth(hyperlink), bottomMargin + textDescent() + 3);
+
 
   if (howThisWorks) {
+    hyperlink = "Close";
     fill(250);
     noStroke();
     rect(0, 2 * margin, width, height - 2 * margin);
@@ -121,21 +132,29 @@ function draw() {
     fill(0);
     textAlign(LEFT, TOP);
     textFont(listFont);
-    textSize(18);
-    text(str, margin, 2 * margin, width - margin, height - 2 * margin);
-    textAlign(RIGHT);
-    text("Close", width - margin, height - margin);
+    textSize(14);
+    text(str, 3 * margin, 2 * margin, width - 6 * margin, height - 2 * margin);
+    textAlign(RIGHT, CENTER);
+    textSize(14);
+    text(hyperlink, width - margin, bottomMargin);
+    stroke(0);
+    strokeWeight(0.9);
+    line(rightTxtMargin, bottomMargin + textDescent() + 3, rightTxtMargin - textWidth(hyperlink), bottomMargin + textDescent() + 3);
+  }
+
+  if (mouseX > rightTxtMargin - textWidth(hyperlink) && mouseX < rightTxtMargin && mouseY > bottomMargin - textAscent() && mouseY < bottomMargin + textDescent() + 3) {
+    cursor(HAND);
+  } else {
+    cursor(ARROW);
   }
 }
 
 function dottedLine(x1, x2, y) {
-  for (var i = 0; i <= 90; i++) {
-    var x = lerp(x1, x2, i / 90);
+  for (var i = 0; i <= 150; i++) {
+    var x = lerp(x1, x2, i / 150);
     stroke(0, 200);
     noFill();
-    strokeWeight(3);
-    strokeCap(ROUND);
-    strokeWeight(2);
+    strokeWeight(1);
     strokeCap(ROUND);
     point(x, y);
   }
@@ -162,9 +181,11 @@ function Contact (line) {
   this.pieces = split (line, '\t');
   this.name   = this.pieces[0];
   this.email  = this.pieces[1];
-  this.nCitations = this.pieces[2];
-  this.avgSimilarity = this.pieces[3];
-  this.numCitedByTarget = this.pieces[4];
+  this.institution = this.pieces[2];
+  this.nCitations = this.pieces[3];
+  this.avgSimilarity = this.pieces[4];
+  this.numOfStudies = this.pieces[5];
+  this.numCitedByTarget = this.pieces[6];
 
   if (this.numCitedByTarget == 0) {
     this.isCited = false;
@@ -172,21 +193,22 @@ function Contact (line) {
     this.isCited = true;
   }
 
-  this.display = function (x1, x2, y) {
+  this.display = function (x1, x2, x3, y) {
     if (this.isCited) {
       fill(255, 35, 35);
     } else {
       fill(0);
     }
     textAlign (LEFT, CENTER);
-    text (this.name, x1, (topYmargin + y * rowHeight) - rowHeight / 2);
+    text (this.name, x1, (topListMargin + y * rowHeight) - rowHeight / 2);    
+    text (this.email, x2, (topListMargin + y * rowHeight) - rowHeight / 2);
     textAlign (RIGHT, CENTER);
-    text (this.email, x2, (topYmargin + y * rowHeight) - rowHeight / 2);
+    text (this.institution, x3, (topListMargin + y * rowHeight) - rowHeight / 2);
   }
 }
 
 function mousePressed() {
-  if (mouseX > width - 2 * margin && mouseY > height - 2 * margin) {
+  if (mouseX > rightTxtMargin - textWidth(hyperlink) && mouseX < rightTxtMargin && mouseY > bottomMargin - textAscent() && mouseY < bottomMargin + textDescent() + 3) {
     howThisWorks =! howThisWorks;
   }
 }

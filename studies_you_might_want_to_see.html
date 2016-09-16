@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script src="//use.typekit.net/tzg3lni.js"></script>
-  <script>try{Typekit.load();}catch(e){}</script>
+  <script src="https://use.typekit.net/mcw0ona.js"></script>
+  <script>try{Typekit.load({ async: true });}catch(e){}</script>
   <link rel="stylesheet" type="text/css" href="style.css">
   <script type="text/javascript" src="p5/p5.js"></script>
   <style>
@@ -41,8 +41,8 @@
   var rightXmargin;
 
   function preload() {
-    titleFont = loadFont ('Univers-Bold.otf');
-    listFont = loadFont ('Univers.otf');
+    titleFont = loadFont('fonts/Rubik-Medium.ttf');
+    listFont = loadFont ('fonts/Rubik-Regular.ttf');
     fiveOldestTable = loadTable("methane_outlier_fiveOldest.txt", "tsv", "header");
     fiveMostCitedTable = loadTable("methane_outlier_fiveMostCited.txt", "tsv", "header");
   }
@@ -75,9 +75,10 @@
 
     // Subtitles
     textSize(14);
-    text("Five oldest studies in the context:", width / 2, topYSubtitleMargin1);
-    text("Five most cited studies in the context:", width / 2, topYSubtitleMargin2);
-    text("Five most cited studies in recent years:", width / 2, topYSubtitleMargin3);
+    text("Five most cited studies in the context:", width / 2, topYSubtitleMargin1);
+        text("Five most cited studies in recent years:", width / 2, topYSubtitleMargin2);
+    text("Five oldest studies in the context:", width / 2, topYSubtitleMargin3);
+
 
     textAlign(LEFT, BOTTOM);
     textFont(listFont);
@@ -96,22 +97,20 @@
     noStroke();
     for (var i = 0; i < 5; i++) {
       textAlign(LEFT, CENTER);
-      text(fiveOldestName[i], margin, topYListMargin1 + rowHeight/2 + i * rowHeight);
-      text(fiveMostCitedName[i], margin, topYListMargin2 + rowHeight/2 + i * rowHeight);
+      text(fiveMostCitedName[i], margin, topYListMargin1 + rowHeight/2 + i * rowHeight);
+      text(fiveOldestName[i], margin, topYListMargin3 + rowHeight/2 + i * rowHeight);
       textAlign(RIGHT, CENTER);
-      text(fiveOldestYear[i], width - margin, topYListMargin1 + rowHeight/2 + i * rowHeight);
-      text(fiveMostCitedYear[i], width - margin, topYListMargin2 + rowHeight/2 + i * rowHeight);
+      text(fiveMostCitedYear[i], width - margin, topYListMargin1 + rowHeight/2 + i * rowHeight);
+      text(fiveOldestYear[i], width - margin, topYListMargin3 + rowHeight/2 + i * rowHeight);
     }
   }
 
   function dottedLine(x1, x2, y) {
-    for (var i = 0; i <= 180; i++) {
-      var x = lerp(x1, x2, i / 180);
+    for (var i = 0; i <= 150; i++) {
+      var x = lerp(x1, x2, i / 150);
       stroke(0, 200);
       noFill();
-      strokeWeight(3);
-      strokeCap(ROUND);
-      strokeWeight(2);
+      strokeWeight(1);
       strokeCap(ROUND);
       point(x, y);
     }
