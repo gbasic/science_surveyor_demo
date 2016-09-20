@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script src="https://use.typekit.net/mcw0ona.js"></script>
-  <script>try{Typekit.load({ async: true });}catch(e){}</script>
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="stylish.css">
   <script type="text/javascript" src="p5/p5.js"></script>
   <style>
     html, body{
@@ -29,6 +28,12 @@
   var fiveMostCitedYear = [];
   var fiveMostCitedIsCited = [];
 
+  var fiveRecentTable;
+  var fiveRecentID = [];
+  var fiveRecentName = [];
+  var fiveRecentYear = [];
+  var fiveRecentIsCited = [];
+
   var margin;
   var leftXmargin;
   var topYListMargin1;
@@ -40,11 +45,15 @@
   var rowHeight;
   var rightXmargin;
 
+  var titleFont;
+  var listFont;
+
   function preload() {
     titleFont = loadFont('fonts/Rubik-Medium.ttf');
     listFont = loadFont ('fonts/Rubik-Regular.ttf');
     fiveOldestTable = loadTable("methane_outlier_fiveOldest.txt", "tsv", "header");
     fiveMostCitedTable = loadTable("methane_outlier_fiveMostCited.txt", "tsv", "header");
+    fiveRecentTable = loadTable("methane_outlier_fiveRecent.txt", "tsv", "header");
   }
 
   function setup() {
@@ -98,10 +107,12 @@
     for (var i = 0; i < 5; i++) {
       textAlign(LEFT, CENTER);
       text(fiveMostCitedName[i], margin, topYListMargin1 + rowHeight/2 + i * rowHeight);
+      text(fiveRecentName[i], margin, topYListMargin2 + rowHeight/2 + i * rowHeight);
       text(fiveOldestName[i], margin, topYListMargin3 + rowHeight/2 + i * rowHeight);
       textAlign(RIGHT, CENTER);
       text(fiveMostCitedYear[i], width - margin, topYListMargin1 + rowHeight/2 + i * rowHeight);
       text(fiveOldestYear[i], width - margin, topYListMargin3 + rowHeight/2 + i * rowHeight);
+      text(fiveRecentYear[i], width - margin, topYListMargin2 + rowHeight/2 + i * rowHeight);
     }
   }
 
@@ -118,15 +129,17 @@
 
   function readData() {
     rowCount = fiveOldestTable.getRowCount();
-    for (var i = 0; i < rowCount; i++) {
+    // for (var i = 0; i < rowCount; i++) {
       fiveOldestID = fiveOldestTable.getColumn("#Columns: article key");
       fiveOldestName = fiveOldestTable.getColumn("title");
       fiveOldestYear = fiveOldestTable.getColumn("year");
       fiveMostCitedID = fiveMostCitedTable.getColumn("#Columns: article key");
       fiveMostCitedName = fiveMostCitedTable.getColumn("title");
       fiveMostCitedYear = fiveMostCitedTable.getColumn("year");
-    }
-    println(fiveOldestID);
+      fiveRecentID = fiveRecentTable.getColumn("#Columns: article key");
+      fiveRecentName = fiveRecentTable.getColumn("title");
+      fiveRecentYear = fiveRecentTable.getColumn("year");
+    // }
   }
 
 

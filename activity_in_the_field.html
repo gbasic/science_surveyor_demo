@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script src="https://use.typekit.net/mcw0ona.js"></script>
-  <script>try{Typekit.load({ async: true });}catch(e){}</script>
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="stylish.css">
   <script type="text/javascript" src="p5/p5.js"></script>
   <style>
     html, body{
@@ -91,7 +90,6 @@ function setup() {
   createCanvas(990, 600);
   textSize(14);
   txtHeight = (textAscent(listFont) + textDescent(listFont));
-  println ("text height " + txtHeight);
 
   c1 = color(195, 222, 232);
   c2 = color(10, 177, 209);
@@ -113,7 +111,6 @@ function setup() {
   lastYear  = max(activeYears);
   timeSpan = lastYear - firstYear;
   margin = width/30; 
-  println("margin = " + margin);
   yearWidth = (width - 2 * margin) / timeSpan;
 
   // Margins
@@ -132,8 +129,6 @@ function setup() {
   for (var i = 0; i < timeSpan + 1; i++) {
     years.push (firstYear + i);
   }
-
-  println("All Years" + " " + years);
 
   // Fill array with inactive years
   for (var i = 0; i < years.length; i++) {
