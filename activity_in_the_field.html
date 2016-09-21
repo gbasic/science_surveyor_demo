@@ -256,7 +256,7 @@ function draw() {
 
   hyperlink = "How this works";
   textAlign(RIGHT, CENTER);
-  textSize(12);
+  textSize(14);
   fill(0);
   text(hyperlink, rightTxtMargin, bottomMargin);
   noFill();
@@ -269,12 +269,12 @@ function draw() {
     fill(250);
     noStroke();
     rect(0, 2 * margin, width, height - 2 * margin);
-    var str = "Science Surveyor can arrange the articles in the context in several ways to provide information about history and patterns of publishing. (The “field” is defined by citations and by language similarity; Science Surveyor reveals the top 10 words in the context so the terms of the “field” are clear.) The context can be arranged in straight chronology, or by number of papers published per year, or by citations per year. Journalists can use these different views to identify active or significant years for the field and to see the duration of the field. In future, Science Surveyor will provide a list of all the papers for each year."
+    var basics = "Science Surveyor can arrange the articles in the context in several ways to provide information about history and patterns of publishing. (The “field” is defined by citations and by language similarity; Science Surveyor reveals the top 10 words in the context so the terms of the “field” are clear.) The context can be arranged in straight chronology, or by number of papers published per year, or by citations per year. Journalists can use these different views to identify active or significant years for the field and to see the duration of the field. In future, Science Surveyor will provide a list of all the papers for each year.";
     fill(0);
     textAlign(LEFT, TOP);
     textFont(listFont);
-    textSize(14);
-    text(str, 3 * margin, 2 * margin, width - 6 * margin, height - 2 * margin);
+    textSize(16);
+    text(basics, margin, 3 * margin, width - 2 * margin, height - 5 * margin);
     textAlign(RIGHT, CENTER);
     textSize(14);
     text(hyperlink, width - margin, bottomMargin);
@@ -432,11 +432,7 @@ function mousePressed() {
   }
 }
 
-function keyPressed() {
-  if (keyCode == DOWN_ARROW) {
-    save('ActivityInTheField.jpg');
-  }
-}
+
 
 
 </script>

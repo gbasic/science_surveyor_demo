@@ -17,9 +17,11 @@
 
 	var str;
 	var topTextMargin;
-	var rectSize;
-	var c1;
-	var c2;
+  var rightTxtMargin;
+  var bottomMargin;
+  var rectSize;
+  var c1;
+  var c2;
 
   var hooverscoreList;
   var articles = [];
@@ -28,14 +30,9 @@
   var titleFont;
   var listFont;
 
-  // var rowCount;
-  // var articleName = [];
-  // var indegreeIN = [];
-  // var indegreeOUT = [];
-  // var tf_idf = [];
-  // var year = [];
-  // var isCited = [];
-
+  var howThisWorks = false;
+  var txt;
+  var hyperlink;
 
   p5.disableFriendlyErrors = true;
 
@@ -49,9 +46,11 @@
     createCanvas(990, 650);
 
     readData();
-    println(articles.length);
+
     margin = width/30;
     topTextMargin = 3 * margin;
+    bottomMargin = height - margin;
+    rightTxtMargin = width - margin;
     rectSize = (width - 2 * margin) / 25;
     c1 = color(195, 222, 232);
     c2 = color(10, 177, 209);
@@ -73,99 +72,134 @@
     textSize(18);
     text(str, margin, topTextMargin, width - 2 * margin, height - 5 * margin);
 
-  // Hooverscore Rectangle
-  rectMode(CENTER);
-  stroke(0);
-  noFill();
-  strokeWeight(2);
-  rect(width/2, height/2, 3 * margin, 3 * margin);
-  fill(0);
-  noStroke();
-  textSize(60);
-  textFont(listFont);
-  textAlign(CENTER, CENTER);
-  text("0", width/2, height/2);
-  textSize(14);
-  text("Agreement Score", width/2, height/2 - 1.9 * margin);
-
-  // Top 25 Bar
-  textSize(14);
-  textAlign(LEFT, BOTTOM);
-  text("Top 25 most similar studies (hover over tiles to display info):", margin, height/2 + 3.7 * margin);
-
-  textAlign(CENTER, CENTER);
-  for (var i = 0; i < articles.length; i ++) {
-    articles[i].display(margin + i * rectSize, height/2 + 4 * margin);
+    // Hooverscore Rectangle
+    rectMode(CENTER);
+    stroke(0);
+    noFill();
+    strokeWeight(2);
+    rect(width/2, height/2, 3 * margin, 3 * margin);
     fill(0);
     noStroke();
-    text(i + 1, margin + i * rectSize + rectSize / 2, height/2 + 4 * margin + rectSize / 2);
-  }
+    textSize(60);
+    textFont(listFont);
+    textAlign(CENTER, CENTER);
+    text("0", width/2, height/2);
+    textSize(14);
+    text("Agreement Score", width/2, height/2 - 1.9 * margin);
 
-  if (closest != null && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
-    closest.displayInfo();
-  }
+     // Top 25 Bar
+     textSize(14);
+     textAlign(LEFT, BOTTOM);
+     text("Top 25 most similar studies (hover over tiles to display info):", margin, height/2 + 3.7 * margin);
 
-  // Legend
-  rectMode(CORNER);
-  noFill();
-  stroke(255, 35, 35);
-  rect(margin, height/2 + 7.5 * margin, rectSize, rectSize);
-  noStroke();
-  fill(255, 35, 35);
-  textAlign(LEFT, CENTER);
-  text("Cited studies are outlined in red", 2.5 * margin, height/2 + 7.5 * margin + rectSize/2);
-}
-
-function readData () {
-  // rowCount = hooverscoreTable.getRowCount();
-  // articleName = hooverscoreTable.getColumn("title");
-  // indegreeIN = hooverscoreTable.getColumn("in degree in context age-tapered");
-  // indegreeOUT = hooverscoreTable.getColumn("in degree out of context");
-  // tf_idf = hooverscoreTable.getColumn("tf-idf score (-1.0 if it is the article itself)");
-  // year = hooverscoreTable.getColumn("year");
-  // isCited = hooverscoreTable.getColumn("cited by article (1 if cited, 0 if not, -1 if article itself)");
-  for (var i = 1; i < hooverscoreList.length; i++) {
-    articles[i-1] = new Article (hooverscoreList[i]);
-  }
-}
-
-function Article (line) {
-  this.infoPieces = split (line, '\t');
-  this.articleName = this.infoPieces[6];
-  this.indegreeIN = this.infoPieces[1];
-  this.indegreOUT = this.infoPieces[3];
-  this.tf_idf = this.infoPieces[5];
-  this.year = this.infoPieces[7];
-  this.isCited = this.infoPieces[8];
-
-  this.display = function (x, y) {
-    var d = dist(x + rectSize/2, y + rectSize/2, mouseX, mouseY);
-    if (d < rectSize/2 && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
-      closest = this;
+     textAlign(CENTER, CENTER);
+     for (var i = 0; i < articles.length; i ++) {
+      articles[i].display(margin + i * rectSize, height/2 + 4 * margin);
+      fill(0);
+      noStroke();
+      text(i + 1, margin + i * rectSize + rectSize / 2, height/2 + 4 * margin + rectSize / 2);
     }
-    if (this.isCited == 1) {
-      stroke(255, 35, 35);
-    } else {
-      stroke(c2);
+
+    if (closest != null && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
+      closest.displayInfo();
     }
-    if (closest == this && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
-      fill(c2);
-    } else {
-      fill(c1);
-    }
+
+    // Legend
     rectMode(CORNER);
-    rect(x, y, rectSize, rectSize);
-  }
-
-  this.displayInfo = function () {
+    noFill();
+    stroke(255, 35, 35);
+    rect(margin, height/2 + 7.5 * margin, rectSize, rectSize);
     noStroke();
+    fill(255, 35, 35);
+    textAlign(LEFT, CENTER);
+    text("Cited studies are outlined in red", 2.5 * margin, height/2 + 7.5 * margin + rectSize/2);
+
+    // How this works button
+    hyperlink = "How this works";
+    textAlign(RIGHT, CENTER);
     fill(0);
     textSize(14);
-    textFont(listFont);
-    textAlign(LEFT, CENTER);
-    text(this.articleName, margin, height/2 + 6 * margin);
-    text("Author names will appear here", margin, height/2 + 6.6 * margin);
+    text(hyperlink, rightTxtMargin, bottomMargin);
+    noFill();
+    stroke(0);
+    strokeWeight(0.9);
+    line(rightTxtMargin, bottomMargin + textDescent() + 3, rightTxtMargin - textWidth(hyperlink), bottomMargin + textDescent() + 3);
+
+    if (howThisWorks) {
+      hyperlink = "Close";
+      fill(250);
+      noStroke();
+      rect(0, 2 * margin, width, height - 2 * margin);
+      var basics = "By comparing the citation patterns of studies that were unusual or atypical for their fields with studies that seemed to have usual or as-expected findings. MORE TO COME.";
+      fill(0);
+      textAlign(LEFT, TOP);
+      textFont(listFont);
+      textSize(16);
+      text(basics, margin, topTextMargin, width - 2 * margin, height - 5 * margin);
+      textSize(14);
+      textAlign(RIGHT, CENTER);
+      text(hyperlink, width - margin, bottomMargin);
+      stroke(0);
+      strokeWeight(0.9);
+      line(rightTxtMargin, bottomMargin + textDescent() + 3, rightTxtMargin - textWidth(hyperlink), bottomMargin + textDescent() + 3);
+    }
+
+    if (mouseX > rightTxtMargin - textWidth(hyperlink) && mouseX < rightTxtMargin && mouseY > bottomMargin - textAscent() && mouseY < bottomMargin + textDescent() + 3) {
+      cursor(HAND);
+    } else {
+      cursor(ARROW);
+    }
   }
-}
+
+  function readData () {
+    for (var i = 1; i < hooverscoreList.length; i++) {
+      articles[i-1] = new Article (hooverscoreList[i]);
+    }
+  }
+
+  function mousePressed() {
+    if (mouseX > rightTxtMargin - textWidth(hyperlink) && mouseX < rightTxtMargin && mouseY > bottomMargin - textAscent() && mouseY < bottomMargin + textDescent() + 3) {
+      howThisWorks =! howThisWorks;
+    }
+  }
+
+  function Article (line) {
+    this.infoPieces = split (line, '\t');
+    this.articleName = this.infoPieces[6];
+    this.indegreeIN = this.infoPieces[1];
+    this.indegreOUT = this.infoPieces[3];
+    this.tf_idf = this.infoPieces[5];
+    this.year = this.infoPieces[7];
+    this.isCited = this.infoPieces[8];
+
+    this.display = function (x, y) {
+      var d = dist(x + rectSize/2, y + rectSize/2, mouseX, mouseY);
+      if (d < rectSize/2 && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
+        closest = this;
+      }
+      if (this.isCited == 1) {
+        stroke(255, 35, 35);
+      } else {
+        stroke(c2);
+      }
+      if (closest == this && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
+        fill(c2);
+      } else {
+        fill(c1);
+      }
+      rectMode(CORNER);
+      rect(x, y, rectSize, rectSize);
+    }
+
+    this.displayInfo = function () {
+      noStroke();
+      fill(0);
+      textSize(14);
+      textFont(listFont);
+      textAlign(LEFT, CENTER);
+      text(this.articleName, margin, height/2 + 6 * margin);
+      text("Author names will appear here", margin, height/2 + 6.6 * margin);
+    }
+  }
 
 </script>

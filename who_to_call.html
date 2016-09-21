@@ -24,6 +24,8 @@ var titleFont;
 var listFont;
 
 var margin;
+var topTextMargin;
+
 var topListMargin;
 var bottomMargin;
 var headerMargin;
@@ -53,6 +55,7 @@ function setup() {
   createCanvas(990, 580);
 
   margin = width/30;
+  topTextMargin = 3 * margin;
   rowHeight = 36;
   headerMargin = 3.5 * margin
   topListMargin = headerMargin + rowHeight / 2;
@@ -110,7 +113,7 @@ function draw() {
 
   textAlign(LEFT, CENTER);
   fill(255, 35, 35);
-  textSize(12);
+  textSize(14);
   text("Authors cited by this study are in red", listX1, bottomMargin);
 
   hyperlink = "How this works";
@@ -128,12 +131,12 @@ function draw() {
     fill(250);
     noStroke();
     rect(0, 2 * margin, width, height - 2 * margin);
-    var str = "Science Surveyor analyzes the context to look for TK# [20? 80?] papers that are most similar to the new study in terms of language. It then looks at citation rates for those papers. It compares those findings against the citations from the new study, and creates two lists journalists can use to come up with ideas for possible sources. The authors who have written similar papers and who are not cited by the new study may be good outside sources and might have a different perspective on the field. Authors who have written similar papers that are highly cited in the field are also identified because they might be considered “influential.”"
+    var basics = "Science Surveyor analyzes the context to look for TK# [20? 80?] papers that are most similar to the new study in terms of language. It then looks at citation rates for those papers. It compares those findings against the citations from the new study, and creates two lists journalists can use to come up with ideas for possible sources. The authors who have written similar papers and who are not cited by the new study may be good outside sources and might have a different perspective on the field. Authors who have written similar papers that are highly cited in the field are also identified because they might be considered “influential.”";
     fill(0);
     textAlign(LEFT, TOP);
     textFont(listFont);
-    textSize(14);
-    text(str, 3 * margin, 2 * margin, width - 6 * margin, height - 2 * margin);
+    textSize(16);
+    text(basics, margin, topTextMargin, width - 2 * margin, height - 4 * margin);
     textAlign(RIGHT, CENTER);
     textSize(14);
     text(hyperlink, width - margin, bottomMargin);
