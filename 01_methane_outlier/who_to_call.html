@@ -43,7 +43,7 @@ var hyperlink;
 
 
 function preload() {
-  wtcList = loadStrings('methane_outlier_whoToCall.txt');
+  wtcList = loadStrings('data/methane_outlier_whoToCall.txt');
   //titleFont = loadFont ('Univers-Bold.otf');
   //listFont = loadFont ('Univers.otf');
   titleFont = loadFont('fonts/Rubik-Medium.ttf');
@@ -71,9 +71,6 @@ function setup() {
   readData();
   wtcList = contacts.slice();
   wtcList.sort(sortByAuthority);
-
-  // txt = createElement('p', 'How this works');
-  // txt.position(100, 10);
 
 }
 

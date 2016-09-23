@@ -39,7 +39,7 @@
   function preload() {
     titleFont = loadFont('fonts/Rubik-Medium.ttf');
     listFont = loadFont ('fonts/Rubik-Regular.ttf');
-    hooverscoreList = loadStrings('methane_outlier_hooverscore.txt');
+    hooverscoreList = loadStrings('data/methane_outlier_hooverscore.txt');
   }
 
   function setup() {
@@ -171,6 +171,15 @@
     this.tf_idf = this.infoPieces[5];
     this.year = this.infoPieces[7];
     this.isCited = this.infoPieces[8];
+    this.authorNames = [];
+    var j = 0;
+    for (var i = 12; i < this.infoPieces.length; i+= 5) {
+      if (this.infoPieces[i] == ''){
+        break;
+      }
+      this.authorNames[j] = this.infoPieces[i];
+      j = j+1;
+    }
 
     this.display = function (x, y) {
       var d = dist(x + rectSize/2, y + rectSize/2, mouseX, mouseY);
@@ -198,7 +207,7 @@
       textFont(listFont);
       textAlign(LEFT, CENTER);
       text(this.articleName, margin, height/2 + 6 * margin);
-      text("Author names will appear here", margin, height/2 + 6.6 * margin);
+      text(this.authorNames, margin, height/2 + 6.6 * margin);
     }
   }
 

@@ -132,15 +132,14 @@ h3{
 	padding: 0px;
 }
 h4{
-	width: 650px;
+	width: 400px;
 	font-family: "Rubik",helvetica, sans-serif;
 	font-style: normal;
-	font-size: 11px;
-	font-weight: 100;
-	color: #333333;
-	text-align: center;
-	margin-left:auto;
-	margin-right:auto;
+	font-size: 16px;
+	font-weight: 300;
+	color: #FFFFFF;
+	text-align: left;
+	text-decoration: underline;
 	margin-bottom: 0px;
 	margin-top: 5px;
 	padding: 0px;
@@ -315,7 +314,7 @@ div.footer_text{
 /******* link *******/
 
 a:link {
-    color: #B2B2B2;
+    color: #FFFFFF;
     text-decoration: underline;
 }
 a.contact:link{
@@ -326,5 +325,5 @@ a:hover{
 	text-decoration: none;
 }
 a:visited {
-    color: #B2B2B2;
+    color: #FFFFFF;
 }
