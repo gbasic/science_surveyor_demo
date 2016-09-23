@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../css/stylish.css">
+  <script type="text/javascript" src="../p5/p5.js"></script>
+  <script type='text/javascript' src="../p5/p5.dom.js"></script>
+  <style>
+    html, body{
+      margin: 0;
+      padding: 0;
+      background: white;
+    }
+  </style>
+</head>
+<script type="text/javascript">
+
+
+var wtcList = [];
+var contacts = [];
+var wtcList = [];
+var titleFont;
+var listFont;
+
+var margin;
+var topTextMargin;
+
+var topListMargin;
+var bottomMargin;
+var headerMargin;
+var leftMargin;
+var rightMargin;
+var rightTxtMargin;
+var rowHeight;
+var listX1;
+var listX2;
+var listX3;
+
+var howThisWorks = false;
+var txt;
+var hyperlink;
+
+
+function preload() {
+  wtcList = loadStrings('data/methane_outlier_whoToCall.txt');
+  //titleFont = loadFont ('Univers-Bold.otf');
+  //listFont = loadFont ('Univers.otf');
+  titleFont = loadFont('fonts/Rubik-Medium.ttf');
+  listFont = loadFont('fonts/Rubik-Regular.ttf');
+}
+
+
+function setup() {
+  createCanvas(990, 580);
+
+  margin = width/30;
+  topTextMargin = 3 * margin;
+  rowHeight = 36;
+  headerMargin = 3.5 * margin
+  topListMargin = headerMargin + rowHeight / 2;
+  bottomMargin = height - margin;
+  leftMargin = 0.5 * margin;
+  rightTxtMargin = width - margin;
+  rightMargin = width - 0.5 * margin;
+  listX1 = margin;
+  listX2 = width/2 - 6 * margin;
+  listX3 = width/2 + 5 * margin;
+
+  println("Row Height: " + rowHeight);
+  readData();
+  wtcList = contacts.slice();
+  wtcList.sort(sortByAuthority);
+
+}
+
+
+function draw() {
+  background(250);
+
+  // Dotted Lines
+  for (var i = 0; i <= 10; i++) {
+    dottedLine(leftMargin, rightMargin, topListMargin + i * rowHeight);
+  }
+
+  // Title
+  fill(0);
+  noStroke();
+  textAlign(CENTER, CENTER);
+  textFont(titleFont);
+  textSize(21);
+  text("Who to Call?", width / 2, listX1);
+
+  // List Title
+  textSize(14);
+  text("Highly cited authors doing similar work:", width / 2, 2.2 * margin);
+
+  // Header
+  textAlign(LEFT, CENTER);
+  text("Name", listX1, headerMargin);
+  text("Email", listX2, headerMargin);
+  text("Institution", listX3, headerMargin);
+
+  // WTC List
+  textFont(listFont);
+  textSize (14);
+  for (var i = 0; i < 10; i++) {
+    wtcList[i].display(listX1, listX2, listX3, i+1);
+  }
+
+  textAlign(LEFT, CENTER);
+  fill(255, 35, 35);
+  textSize(14);
+  text("Authors cited by this study are in red", listX1, bottomMargin);
+
+  hyperlink = "How this works";
+  textAlign(RIGHT, CENTER);
+  fill(0);
+  text(hyperlink, rightTxtMargin, bottomMargin);
+  noFill();
+  stroke(0);
+  strokeWeight(0.9);
+  line(rightTxtMargin, bottomMargin + textDescent() + 3, rightTxtMargin - textWidth(hyperlink), bottomMargin + textDescent() + 3);
+
+
+  if (howThisWorks) {
+    hyperlink = "Close";
+    fill(250);
+    noStroke();
+    rect(0, 2 * margin, width, height - 2 * margin);
+    var basics = "Science Surveyor analyzes the context to look for TK# [20? 80?] papers that are most similar to the new study in terms of language. It then looks at citation rates for those papers. It compares those findings against the citations from the new study, and creates two lists journalists can use to come up with ideas for possible sources. The authors who have written similar papers and who are not cited by the new study may be good outside sources and might have a different perspective on the field. Authors who have written similar papers that are highly cited in the field are also identified because they might be considered “influential.”";
+    fill(0);
+    textAlign(LEFT, TOP);
+    textFont(listFont);
+    textSize(16);
+    text(basics, margin, topTextMargin, width - 2 * margin, height - 4 * margin);
+    textAlign(RIGHT, CENTER);
+    textSize(14);
+    text(hyperlink, width - margin, bottomMargin);
+    stroke(0);
+    strokeWeight(0.9);
+    line(rightTxtMargin, bottomMargin + textDescent() + 3, rightTxtMargin - textWidth(hyperlink), bottomMargin + textDescent() + 3);
+  }
+
+  if (mouseX > rightTxtMargin - textWidth(hyperlink) && mouseX < rightTxtMargin && mouseY > bottomMargin - textAscent() && mouseY < bottomMargin + textDescent() + 3) {
+    cursor(HAND);
+  } else {
+    cursor(ARROW);
+  }
+}
+
+function dottedLine(x1, x2, y) {
+  for (var i = 0; i <= 150; i++) {
+    var x = lerp(x1, x2, i / 150);
+    stroke(0, 200);
+    noFill();
+    strokeWeight(1);
+    strokeCap(ROUND);
+    point(x, y);
+  }
+}
+
+function readData () {
+  for (var i = 1; i < wtcList.length; i++) {
+    contacts[i] = new Contact (wtcList[i]);
+  }
+}
+
+
+// This doesnt work!!!!
+function removeCitedAuthors(arrObj) {
+  for (var i = arrObj.length - 1; i >= 0; i--) {
+    if (arrObj[i].isCited) {
+      arrObj.splice(i, 1);
+    }
+  }
+}
+
+
+function Contact (line) {
+  this.pieces = split (line, '\t');
+  this.name   = this.pieces[0];
+  this.email  = this.pieces[1];
+  this.institution = this.pieces[2];
+  this.nCitations = this.pieces[3];
+  this.avgSimilarity = this.pieces[4];
+  this.numOfStudies = this.pieces[5];
+  this.numCitedByTarget = this.pieces[6];
+
+  if (this.numCitedByTarget == 0) {
+    this.isCited = false;
+  } else {
+    this.isCited = true;
+  }
+
+  this.display = function (x1, x2, x3, y) {
+    if (this.isCited) {
+      fill(255, 35, 35);
+    } else {
+      fill(0);
+    }
+    textAlign (LEFT, CENTER);
+    text (this.name, x1, (topListMargin + y * rowHeight) - rowHeight / 2);    
+    text (this.email, x2, (topListMargin + y * rowHeight) - rowHeight / 2);
+    textAlign (RIGHT, CENTER);
+    text (this.institution, x3, (topListMargin + y * rowHeight) - rowHeight / 2);
+  }
+}
+
+function mousePressed() {
+  if (mouseX > rightTxtMargin - textWidth(hyperlink) && mouseX < rightTxtMargin && mouseY > bottomMargin - textAscent() && mouseY < bottomMargin + textDescent() + 3) {
+    howThisWorks =! howThisWorks;
+  }
+}
+
+
+function sortBySimilarity(a,b) {
+  if (a.avgSimilarity > b.avgSimilarity) {
+    return -1;
+  }
+  if (a.avgSimilarity < b.avgSimilarity) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function sortByAuthority(a,b) {
+  if (a.nCitations > b.nCitations) {
+    return -1;
+  }
+  if (a.nCitations < b.nCitations) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+</script>
