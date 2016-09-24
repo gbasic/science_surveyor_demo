@@ -93,3 +93,16 @@ a.c4sr-button {
 	padding: 11px;
 	margin-bottom: 20px;
 }
+
+a.casestudy-button {
+	width: 100%;
+	color: black;
+	float: left;
+	border: 2px solid #14a4bc;
+	background: #C4DEE8;
+	border-radius: 0;
+	font-size: 75%;
+	padding: 11px;
+	margin-bottom: 20px;
+}
+
