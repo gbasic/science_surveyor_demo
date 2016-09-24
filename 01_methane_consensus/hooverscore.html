@@ -49,7 +49,7 @@
 
     margin = width/30;
     topTextMargin = 3 * margin;
-    bottomMargin = height - margin;
+    bottomMargin = height - 2.5 * margin;
     rightTxtMargin = width - margin;
     rectSize = (width - 2 * margin) / 25;
     c1 = color(195, 222, 232);
@@ -112,11 +112,11 @@
     rectMode(CORNER);
     noFill();
     stroke(255, 35, 35);
-    rect(margin, height/2 + 7.5 * margin, rectSize, rectSize);
+    rect(margin, height - 3 * margin, rectSize, rectSize);
     noStroke();
     fill(255, 35, 35);
     textAlign(LEFT, CENTER);
-    text("Cited studies are outlined in red", 2.5 * margin, height/2 + 7.5 * margin + rectSize/2);
+    text("Cited studies are outlined in red", 2.5 * margin, height - 3 * margin + rectSize/2);
 
     // How this works button
     hyperlink = "How this works";
@@ -216,8 +216,8 @@
       textSize(14);
       textFont(listFont);
       textAlign(LEFT, CENTER);
-      text(this.articleName, margin, height/2 + 6 * margin);
-      text(this.authorNames, margin, height/2 + 6.6 * margin);
+      text(this.articleName, margin, height/2 + 7 * margin);
+      text(this.authorNames, margin, height/2 + 7.6 * margin);
     }
   }
 

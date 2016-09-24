@@ -4,14 +4,14 @@
 	<meta charset="utf-8">
 	<link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="../css/stylish.css">
-	<script type="text/javascript" src="../p5/p5.js"></script>
-	<style>
-		html, body{
-			margin: 0;
-			padding: 0;
-			background: white;
-		}
-	</style>
+  <script type="text/javascript" src="../p5/p5.js"></script>
+  <style>
+    html, body{
+     margin: 0;
+     padding: 0;
+     background: white;
+   }
+ </style>
 </head>
 <script type="text/javascript">
 
@@ -49,7 +49,7 @@
 
     margin = width/30;
     topTextMargin = 3 * margin;
-    bottomMargin = height - margin;
+    bottomMargin = height - 2.5 * margin;
     rightTxtMargin = width - margin;
     rectSize = (width - 2 * margin) / 25;
     c1 = color(195, 222, 232);
@@ -100,19 +100,23 @@
       text(i + 1, margin + i * rectSize + rectSize / 2, height/2 + 4 * margin + rectSize / 2);
     }
 
-    if (closest != null && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
-      closest.displayInfo();
-    }
+    for (var i = 0; i < articles.length; i ++) {
+     articles[i].displayCited(margin + i * rectSize, height/2 + 4 * margin);
+   }
+
+   if (closest != null && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
+    closest.displayInfo();
+  }
 
     // Legend
     rectMode(CORNER);
     noFill();
     stroke(255, 35, 35);
-    rect(margin, height/2 + 7.5 * margin, rectSize, rectSize);
+    rect(margin, height - 3 * margin, rectSize, rectSize);
     noStroke();
     fill(255, 35, 35);
     textAlign(LEFT, CENTER);
-    text("Cited studies are outlined in red", 2.5 * margin, height/2 + 7.5 * margin + rectSize/2);
+    text("Cited studies are outlined in red", 2.5 * margin, height - 3 * margin + rectSize/2);
 
     // How this works button
     hyperlink = "How this works";
@@ -186,17 +190,23 @@
       if (d < rectSize/2 && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
         closest = this;
       }
-      if (this.isCited == 1) {
-        stroke(255, 35, 35);
-      } else {
-        stroke(c2);
-      }
+      stroke(c2);
       if (closest == this && mouseX > margin && mouseX < width - margin && mouseY > height/2 + 4 * margin && mouseY < height/2 + 4 * margin + rectSize) {
         fill(c2);
       } else {
         fill(c1);
       }
       rectMode(CORNER);
+      rect(x, y, rectSize, rectSize);      
+    }
+
+    this.displayCited = function (x, y) {
+      noFill();
+      if (this.isCited == 1) {
+        stroke(255, 35, 35);
+      } else {
+        noStroke();
+      }
       rect(x, y, rectSize, rectSize);
     }
 
@@ -206,8 +216,8 @@
       textSize(14);
       textFont(listFont);
       textAlign(LEFT, CENTER);
-      text(this.articleName, margin, height/2 + 6 * margin);
-      text(this.authorNames, margin, height/2 + 6.6 * margin);
+      text(this.articleName, margin, height/2 + 7 * margin);
+      text(this.authorNames, margin, height/2 + 7.6 * margin);
     }
   }
 
