@@ -78,7 +78,7 @@ var hyperlink;
 p5.disableFriendlyErrors = true;
 
 function preload () {
-  activityTable = loadTable ("data/year_stats-17361257_20160605-160142.tsv", "tsv", "header");
+  activityTable = loadTable ("data/year_stats-24970671_20160606-023751.tsv", "tsv", "header");
   titleFont = loadFont('fonts/Rubik-Medium.ttf');
   listFont = loadFont ('fonts/Rubik-Regular.ttf');
 }
@@ -183,7 +183,7 @@ function draw() {
   text("Top 10 words defining the field:", margin, topTextMargin);
   text("Year:\nPublished studies:\nCited by this study:", margin, topBarsMargin - 0.5 * margin);
   textFont(titleFont);
-  text("soil, forest, plant, water, co2, carbon, specie, organic, flux, biomass", 7.5 * margin, topTextMargin);
+  text("cortex, brain, neuron, patient, schizophrenia, image, memory, disorder, task, cell", 7.5 * margin, topTextMargin);
 
   if (closest != null && mouseY < bottomBarsMargin + margin && mouseY > topBarsMargin) {
     closest.displayInfo();
