@@ -65,7 +65,7 @@ function setup() {
   rightMargin = width - 0.5 * margin;
   listX1 = margin;
   listX2 = width/2 - 6 * margin;
-  listX3 = width/2 + 5 * margin;
+  listX3 = width/2 + 2 * margin;
 
   println("Row Height: " + rowHeight);
   readData();
@@ -202,7 +202,6 @@ function Contact (line) {
     textAlign (LEFT, CENTER);
     text (this.name, x1, (topListMargin + y * rowHeight) - rowHeight / 2);    
     text (this.email, x2, (topListMargin + y * rowHeight) - rowHeight / 2);
-    textAlign (RIGHT, CENTER);
     text (this.institution, x3, (topListMargin + y * rowHeight) - rowHeight / 2);
   }
 }
