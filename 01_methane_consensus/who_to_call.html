@@ -178,7 +178,7 @@ function Contact (line) {
   this.pieces = split (line, '\t');
   this.name   = this.pieces[0];
   this.email  = this.pieces[1];
-  // this.institution = this.pieces[2];
+  this.institution = this.pieces[6];
   this.nCitations = this.pieces[2];
   this.avgSimilarity = this.pieces[3];
   this.numOfStudies = this.pieces[4];
@@ -199,8 +199,7 @@ function Contact (line) {
     textAlign (LEFT, CENTER);
     text (this.name, x1, (topListMargin + y * rowHeight) - rowHeight / 2);    
     text (this.email, x2, (topListMargin + y * rowHeight) - rowHeight / 2);
-    textAlign (RIGHT, CENTER);
-    //text (this.institution, x3, (topListMargin + y * rowHeight) - rowHeight / 2);
+    text (this.institution, x3, (topListMargin + y * rowHeight) - rowHeight / 2);
   }
 }
 
