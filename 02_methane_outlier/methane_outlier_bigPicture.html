@@ -19,12 +19,32 @@ var margin;
 
 var titleFont;
 var listFont;
-var placeholder;
+var contextTable;
+
+var c1;
+var c2;
+
+var articles = [];
+var closest;
+var articleCount;
+var articleID = [];
+var articleName = [];
+var indegreeIN = [];
+var indegreeOUT = [];
+var indegreeTotal = [];
+var maxIndegree;
+var minIndegree;
+var tf_idf = [];
+var year = [];
+var isCited = [];
+
+var rectSize;
+var damping = 0.3;
 
 function preload() {
     titleFont = loadFont('fonts/Rubik-Medium.ttf');
     listFont = loadFont ('fonts/Rubik-Regular.ttf');
-    placeholder = loadImage ('theBigPicture.jpg');
+    contextTable = loadTable("data/methane_outlier_context.tsv", "tsv", "header");
 }
 
 function setup() {
@@ -32,18 +52,49 @@ function setup() {
 
     margin = width/30;
 
-    
+    c1 = color(195, 222, 232);
+  	c2 = color(10, 177, 209);
+  	readData();
+}
+
+function readData() {
+	articleCount = contextTable.getRowCount();
+	for (var i = 0; i < articleCount; i++) {
+		articleID[i] = contextTable.getNum(i, 0);
+		indegreeIN[i] = contextTable.getNum(i, 1);
+		indegreeOUT[i] = contextTable.getNum(i, 3);
+		indegreeTotal[i] = indegreeIN[i] + indegreeOUT[i];
+		tf_idf[i] = contextTable.getNum(i, 5);
+		articleName[i] = contextTable.getString(i, 6);
+		year[i] = contextTable.getNum(i, 7);
+		isCited[i] = contextTable.getNum(i, 8);
+	}
+
+	maxIndegree = max(indegreeTotal);
+	minIndegree = min(indegreeTotal);
 }
 
 function draw() {
-	// background(250);
-	image(placeholder, 0, 0);
+	background(250);
 	fill(0);
     noStroke();
     textAlign(CENTER, CENTER);
     textFont(titleFont);
     textSize(21);
     text("The Big Picture", width / 2, margin);
+}
+
+function Article (ID_, indegree_, tf_idf_, name_, year_, isCited_, x_, y_) {
+	this.articleID = ID_;
+	this.indegree = indegree_;
+	this.tf_idf = tf_idf_;
+	this.articleName = name_;
+	this.year = year_;
+	this.isCited = isCited_;
+	this.x = x_;
+	this.y = y_;
+	this.endX = x_;
+	this.endY = y_;
 }
 
 
