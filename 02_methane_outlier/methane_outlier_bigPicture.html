@@ -104,6 +104,7 @@
 		maxIndegree = max(indegreeTotal);
 		minIndegree = min(indegreeTotal);
 
+
 		
 		//Article (ID_, indegree_, tf_idf_, name_, year_, isCited_, x_, y_)
 		for (var i = 0; i < articleCount; i++) {
@@ -274,10 +275,10 @@ function sortByOrder (a, b) {
 }
 
 function sortByInfluence (a, b) {
-	if (a.indegree < b.indegree) {
+	if (a.indegree > b.indegree) {
 		return -1;
 	}
-	if (a.indegree > b.indegree) {
+	if (a.indegree < b.indegree) {
 		return 1;
 	} else {
 		return 0;
@@ -285,10 +286,10 @@ function sortByInfluence (a, b) {
 }
 
 function sortBySimilarity (a, b) {
-	if (a.tf_idf < b.tf_idf) {
+	if (a.tf_idf > b.tf_idf) {
 		return -1;
 	}
-	if (a.tf_idf > b.tf_idf) {
+	if (a.tf_idf < b.tf_idf) {
 		return 1;
 	} else {
 		return 0;
